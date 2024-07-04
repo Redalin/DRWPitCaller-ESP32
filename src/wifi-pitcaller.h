@@ -23,7 +23,7 @@ void scanForWifi() {
   Serial.println(F("WiFi scan done"));
 }
 
-void connectToWifi() {
+String connectToWifi() {
   int i, n;
   bool wifiFound = false;
   Serial.println(F("Found the following networks:"));
@@ -59,6 +59,7 @@ void connectToWifi() {
     Serial.println("Connected to WiFi");
     Serial.print("IP address:\t");
     Serial.println(WiFi.localIP());
+    return KNOWN_SSID[n];
   } else {
     // We don't have WiFi, lets create our own
     WiFi.softAP(AP_SSID, AP_PASSWORD);
@@ -69,5 +70,6 @@ void connectToWifi() {
 
     // Print ESP32 Local IP Address
     Serial.println(WiFi.localIP());
+    return AP_SSID;
   }
 }

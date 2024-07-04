@@ -25,7 +25,9 @@ void setup() {
   scanForWifi();
   if(visibleNetworks > 0) {
     displayText("Connecting to WiFi");
-    connectToWifi();
+    String wifiName = connectToWifi();
+    String wifiMessage = "Connected to: " + wifiName;
+    displayText(wifiMessage);
   } else {
     Serial.println(F("no networks found. Reset to try again"));
     while (true); // no need to go further, hang in there, will auto launch the Soft WDT reset
@@ -39,7 +41,6 @@ void setup() {
     }
   }
   Serial.println("mDNS responder started");
-  displayText("mDNS responder started");
 
   ws.onEvent(onEvent);
   server.addHandler(&ws);
