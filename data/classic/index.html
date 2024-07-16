@@ -3,13 +3,26 @@
 
 <head>
   <title>Lane Pit Control</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
 </head>
 
 <body>
   <div class="topnav">
-    <h1>DRW Pit Caller - Classic</h1>
+    <label class="hamburger-menu">
+      <input type="checkbox">
+    </label>
+    <aside class="sidebar">
+      <nav>
+        <a href="../index.html">Main</a>
+        <a href="../soundboard/index.html">Soundboard</a>
+      </nav>
+    </aside>
+    <div class="header">
+      DRW Pit Caller - Classic
+    </div>
   </div>
   <div id="lanes">
     <div class="card" id="lane1">
@@ -32,9 +45,6 @@
       <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(3, this.value)">
       <button class="button" onclick="startPit(3)">Pit</button>
     </div>
-  </div>
-  <div class="bottomnav">
-    <h3><a href="../index.html">Switch to Main mode</a></h3>
   </div>
   <script src="script.js"></script>
 </body>

@@ -42,8 +42,8 @@ void notifyClients() {
 
 void announcePitting(int lane, bool isPitting) {
   String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
-  Serial.println("AnnouncePitting message is:");
-  Serial.println(message);
+  //Serial.println("AnnouncePitting message is:");
+  //Serial.println(message);
   String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].pilotName + " " + (isPitting ? "Pitting" : "Leaving");
   displayText(oledMessage);
   ws.textAll(message);

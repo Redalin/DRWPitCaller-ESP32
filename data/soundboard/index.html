@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Lane Pit Control</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+</head>
+
+<body>
+  <div class="topnav">
+    <label class="hamburger-menu">
+      <input type="checkbox">
+    </label>
+    <aside class="sidebar">
+      <nav>
+        <a href="../index.html">Main</a>
+        <a href="../classic/index.html">Classic</a>
+      </nav>
+    </aside>
+    <div class="header">
+      DRW Pit Caller - Soundboard
+    </div>
+  </div>
+  <div id="lanes">
+    <div class="card" id="lane1">
+      <h2>Message 1</h2>
+      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(0, this.value)">
+      <button class="button" onclick="startPit(0)">Play</button>
+    </div>
+    <div class="card" id="lane2">
+      <h2>Message 2</h2>
+      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(1, this.value)">
+      <button class="button" onclick="startPit(1)">Play</button>
+    </div>
+    <div class="card" id="lane3">
+      <h2>Message 3</h2>
+      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(2, this.value)">
+      <button class="button" onclick="startPit(2)">Play</button>
+    </div>
+    <div class="card" id="lane4">
+      <h2>Message 4</h2>
+      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(3, this.value)">
+      <button class="button" onclick="startPit(3)">Play</button>
+    </div>
+  </div>
+
+  <audio src="sounds/AirStrike.wav" id="AirStrike"></audio>
+  <audio src="sounds/Explosion1.wav" id="Explosion"></audio>
+  <audio src="sounds/NukeAnthem.wav" id="Anthem"></audio>
+  <audio src="sounds/SheepBaa.wav" id="Baa"></audio>
+  <audio src="sounds/CowMoo.wav" id="Moo"></audio>
+  
+  <div class="card" id="buttons">
+    <h2>Extra Sounds</h2>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

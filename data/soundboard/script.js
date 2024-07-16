@@ -1,5 +1,38 @@
 var websocket;
 
+const sounds = ['AirStrike', 'Explosion', 'Anthem', 'Baa', 'Moo'];
+
+sounds.forEach((sound) => {
+  const btn = document.createElement('button');
+  btn.classList.add('button');
+  btn.innerText = sound;
+
+  btn.addEventListener('click', ()=> {
+    stopSounds();
+    document.getElementById(sound).play();
+  });
+
+  document.getElementById('buttons').appendChild(btn);
+});
+
+function stopSounds() {
+  sounds.forEach((sound) =>{
+    const song = document.getElementById(sound);
+    song.pause();
+    song.currentTime = 0;
+  });
+}
+
+/* Set the width of the sidebar to 250px (show it) */
+function openNav() {
+  document.getElementById("menuSidepanel").style.width = "200px";
+}
+
+/* Set the width of the sidebar to 0 (hide it) */
+function closeNav() {
+  document.getElementById("menuSidepanel").style.width = "0";
+}
+
 function initWebSocket() {
   websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
   websocket.onopen = function(event) { console.log('Connected to WebSocket'); };
@@ -38,7 +71,7 @@ document.addEventListener('click', () => {
 
 
 function announcePitting(lane, pilotName) {
-  var text = "Lane " + (lane + 1) + " pilot " + pilotName + " is pitting";
+  var text = pilotName;
   var utterance = new SpeechSynthesisUtterance(text);
   speechSynthesis.speak(utterance);
 }
@@ -56,7 +89,7 @@ function updateUI(buttonStates) {
       button.innerHTML = 'Pit';
       button.disabled = false;
     }
-    h2.textContent = "Lane " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
+    h2.textContent = "Message: " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
     input.value = buttonStates[i].pilotName || '';
   }
 }

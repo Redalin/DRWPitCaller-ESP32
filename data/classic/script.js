@@ -1,3 +1,13 @@
+/* Set the width of the sidebar to 250px (show it) */
+function openNav() {
+  document.getElementById("menuSidepanel").style.width = "200px";
+}
+
+/* Set the width of the sidebar to 0 (hide it) */
+function closeNav() {
+  document.getElementById("menuSidepanel").style.width = "0";
+}
+
 var websocket;
 
 function initWebSocket() {

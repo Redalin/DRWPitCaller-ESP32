@@ -23,8 +23,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 String textMessage = "Yo what's up!";
 
 void displayText(String message) {
-  Serial.println(F("Into text displaytext method"));  
-  Serial.println(F("Clearing OLED display"));  
+  //Serial.println(F("Into text displaytext method"));  
+  //Serial.println(F("Clearing OLED display"));  
   display.clearDisplay();
 
   display.setTextSize(1.5);      // Normal 1:1 pixel scale
