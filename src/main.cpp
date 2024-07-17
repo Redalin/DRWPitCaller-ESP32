@@ -65,7 +65,7 @@ void setup() {
 
 void loop() {
   ws.cleanupClients();
-  checkLaneSwitches();
+  // checkLaneSwitches();
 
   unsigned long currentTime = millis();
   for (int i = 0; i < NUM_LANES; i++) {

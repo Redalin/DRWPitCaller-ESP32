@@ -10,16 +10,16 @@ html {
 }
 
 a:link {
-    color: yellow;
+    color: var(--foreground);
     font-size: 1.5rem;
 }
   
 a:hover  {
-    color: yellow;
+    color: var(--foreground);
 }
 
 a:visited {
-    color: white;
+    color: var(--foreground);
 }
 
 .header {
@@ -68,8 +68,8 @@ body {
 }
 
 .hamburger-menu:has(input:checked) {
-    --foreground: white;
-    --background: white;
+    --foreground: var(--background);
+    /* --background: yellow; */
 }
 
 .hamburger-menu::before,
@@ -139,14 +139,24 @@ body {
     box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
     padding-top: 10px;
     padding-bottom: 20px;
+    min-width: 450px;
+    font-size: 1.5rem;
 }
 
 .card h2 {
     margin: 0;
     padding: 10px;
-    font-size: 1.5em;
+    font-size: 2rem;
     color: black;
   }
+
+div.stats {
+    text-align: left;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding-left: 5%;
+    
+} 
 
 .button {
     padding: 10px 0px;
@@ -174,11 +184,14 @@ body {
     color: red;
 }
 
-.text {
-    font-size: 1.5rem;
-    color: #8c8c8c;
-    font-weight: bold;
+.StatsButton {
+    background-color: aquamarine;
+    top: 10px;
+    right: 10px;
+    float: right;
+    padding: 10px 0;
 }
+
 .pilotName {
     margin-top: 5px;
     padding: 10px;

@@ -26,11 +26,19 @@ function updateLaneName(lane, name) {
   websocket.send('update' + lane + ':' + name);
 }
 
+function resetStats() {
+  websocket.send('resetStats');
+  for(var lane = 0; lane < 4; lane++) {
+    updateStats(lane, "0");
+  }
+}
+
 function handleWebSocketMessage(message) {
   if (message.type === 'update') {
     updateUI(message.data);
   } else if (message.type === 'announce') {
     announcePitting(message.lane, message.pilotName, message.isPitting);
+    updateStats(message.lane, message.pitCount);
   }
 }
 
@@ -55,7 +63,7 @@ function announcePitting(lane, pilotName, isPitting) {
 
 function updateUI(buttonStates) {
   for (var i = 0; i < buttonStates.length; i++) {
-    var lane = document.getElementById('lane' + (i + 1));
+    var lane = document.getElementById('lane' + (i + 1));   
     var h2 = lane.getElementsByTagName('h2')[0];
     var button = lane.getElementsByTagName('button')[0];
     var input = lane.getElementsByClassName('pilotName')[0];
@@ -74,6 +82,11 @@ function updateUI(buttonStates) {
     h2.textContent = "Lane " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
     input.value = buttonStates[i].pilotName || '';
   }
+}
+
+function updateStats(lane, count) {
+  var laneStat = document.getElementById('stats' + (lane + 1));
+  laneStat.textContent = "Lane " + (lane + 1) + ": " + count;
 }
 
 window.onload = function(event) {

@@ -19,15 +19,23 @@ struct ButtonState {
   String pilotName;
   int countdown;
   bool isPitting;
+  int pitCount;
 };
 
 ButtonState buttonStates[NUM_LANES] = {
-  {"Lane 1", "", 0, false},
-  {"Lane 2", "", 0, false},
-  {"Lane 3", "", 0, false},
-  {"Lane 4", "", 0, false}
+  {"Lane 1", "", 0, false, 0},
+  {"Lane 2", "", 0, false, 0},
+  {"Lane 3", "", 0, false, 0},
+  {"Lane 4", "", 0, false, 0}
 };
 
+void resetCountStats() {
+  // Serial.println("Resetting lanes");
+  for (int lane = 0; lane < NUM_LANES; lane++) {
+    // Serial.println((String)"Resetting lane" + lane);
+    buttonStates[lane].pitCount = 0;
+  }
+}
 
 void notifyClients() {
   String message = "{\"type\":\"update\",\"data\":[";
@@ -41,9 +49,9 @@ void notifyClients() {
 }
 
 void announcePitting(int lane, bool isPitting) {
-  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
-  //Serial.println("AnnouncePitting message is:");
-  //Serial.println(message);
+  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"isPitting\":" + (isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
+  // Serial.print("AnnouncePitting message is:  ");
+  // Serial.println(message);
   String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].pilotName + " " + (isPitting ? "Pitting" : "Leaving");
   displayText(oledMessage);
   ws.textAll(message);
@@ -59,12 +67,16 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       buttonStates[lane].countdown = countdownTimer;
       countdownTimers[lane] = millis();
       buttonStates[lane].isPitting = !buttonStates[lane].isPitting; // change the pitting flag
+      buttonStates[lane].pitCount++;  // increment the count for number of pit events
+      // Serial.println((String)"Incrementing Lane " + (lane + 1) + " pit count to " + buttonStates[lane].pitCount);
       announcePitting(lane, buttonStates[lane].isPitting);
     } else if (message.startsWith("update")) {
       int lane = message.charAt(6) - '0';
       String name = message.substring(8);
       buttonStates[lane].pilotName = name;
       buttonStates[lane].label = "Lane " + String(lane + 1) + ": " + name;
+    } else if (message.startsWith("resetStats")){
+      resetCountStats();
     }
     notifyClients();
   }
