@@ -33,7 +33,7 @@ a:visited {
 
 .topnav {
     display: flex;
-    overflow: hidden;
+    overflow: visible;
     background-color: #143642;
     background-image: linear-gradient(yellow, purple);
 }
@@ -112,16 +112,21 @@ body {
 }
 
 .sidebar {
+    height: 50%;
     text-align: left;
     width: max-content;
-    display: flex;
+    /* display: flex; */
     /* float: none; */
     transition: translate var(--animation-timing);
     translate: -100%;
     padding: 0.5rem 1rem;
     padding-top: calc(var(--hamburger-height) + var(--hamburger-margin) + 1rem);
     background-image: linear-gradient(purple, yellow);
-  }
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+}
   
 .hamburger-menu:has(input:checked) + .sidebar {
     translate: 0;
@@ -137,10 +142,12 @@ body {
     display: inline-block;
     background-color: #F8F7F9;
     box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
-    padding-top: 10px;
-    padding-bottom: 20px;
+    /* padding-top: 20px; */
+    /* padding-bottom: 20px; */
     min-width: 450px;
+    min-height: 150px;
     font-size: 1.5rem;
+    margin: 5px;
 }
 
 .card h2 {
@@ -150,12 +157,17 @@ body {
     color: black;
   }
 
-div.stats {
+.card table {
+    /* border: 2px; */
+    width: 100%;
+}
+.stats {
     text-align: left;
     font-size: 1.2rem;
     font-weight: bold;
-    padding-left: 5%;
-    
+    padding-left: 10%;
+    min-width: 50%;
+    /* border: 3px solid green; */
 } 
 
 .button {
@@ -186,10 +198,9 @@ div.stats {
 
 .StatsButton {
     background-color: aquamarine;
-    top: 10px;
-    right: 10px;
+    position: relative;
     float: right;
-    padding: 10px 0;
+    /* margin: 5px 5px; */
 }
 
 .pilotName {

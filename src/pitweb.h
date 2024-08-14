@@ -39,17 +39,17 @@ void resetCountStats() {
 
 void notifyClients() {
   String message = "{\"type\":\"update\",\"data\":[";
-  for (int i = 0; i < NUM_LANES; i++) {
-    message += "{\"label\":\"" + buttonStates[i].label + "\",\"pilotName\":\"" + buttonStates[i].pilotName + "\",\"countdown\":" + String(buttonStates[i].countdown) + ",\"isPitting\":" + (buttonStates[i].isPitting ? "true" : "false") + "}";
+  for (int lane = 0; lane < NUM_LANES; lane++) {
+    message += "{\"label\":\"" + buttonStates[lane].label + "\",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"countdown\":" + String(buttonStates[lane].countdown) + ",\"isPitting\":" + (buttonStates[lane].isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
     
-    if (i < NUM_LANES - 1) message += ",";
+    if (lane < NUM_LANES - 1) message += ",";
   }
   message += "]}";
   ws.textAll(message);
 }
 
 void announcePitting(int lane, bool isPitting) {
-  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"isPitting\":" + (isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
+  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
   // Serial.print("AnnouncePitting message is:  ");
   // Serial.println(message);
   String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].pilotName + " " + (isPitting ? "Pitting" : "Leaving");
@@ -92,14 +92,15 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 }
 
 void checkLaneSwitches() {
-  for (int i = 0; i < NUM_LANES; i++) {
-    if (digitalRead(lanePins[i]) == HIGH) { // Assuming switch opens to high
-      if (buttonStates[i].countdown == 0) { // Only trigger if not already in countdown
-        buttonStates[i].countdown = countdownTimer;
-        countdownTimers[i] = millis();
+  for (int lane = 0; lane < NUM_LANES; lane++) {
+    if (digitalRead(lanePins[lane]) == HIGH) { // Assuming switch opens to high
+      if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
+        buttonStates[lane].countdown = countdownTimer;
+        countdownTimers[lane] = millis();
         notifyClients();
-        buttonStates[i].isPitting = !buttonStates[i].isPitting; // change the pitting flag for a button press
-        announcePitting(i, buttonStates[i].isPitting);
+        buttonStates[lane].isPitting = !buttonStates[lane].isPitting; // change the pitting flag for a button press
+        buttonStates[lane].pitCount++;  
+        announcePitting(lane, buttonStates[lane].isPitting);
       }
     }
   }

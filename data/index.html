@@ -47,11 +47,19 @@
     </div>
     <div class="card">
       <h2>Pit Stats</h2>
-      <div class="stats" id="stats1">Lane 1: 0</div>
-      <div class="stats" id="stats2">Lane 2: 0</div>
-      <div class="stats" id="stats3">Lane 3: 0</div>
-      <div class="stats" id="stats4">Lane 4: 0</div>
-      <button class="button StatsButton" onclick="resetStats()">Reset</button>
+      <table>
+        <tr>
+          <td>
+            <div class="stats" id="stats1">Lane 1: 0</div>
+            <div class="stats" id="stats2">Lane 2: 0</div>
+            <div class="stats" id="stats3">Lane 3: 0</div>
+            <div class="stats" id="stats4">Lane 4: 0</div>
+          </td>
+          <td>
+            <button class="button StatsButton" onclick="resetStats()">Reset</button>
+          </td>
+        </tr>
+      </table>      
     </div>
   </div>
   <script src="script.js"></script>

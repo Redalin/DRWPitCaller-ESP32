@@ -38,7 +38,6 @@ function handleWebSocketMessage(message) {
     updateUI(message.data);
   } else if (message.type === 'announce') {
     announcePitting(message.lane, message.pilotName, message.isPitting);
-    updateStats(message.lane, message.pitCount);
   }
 }
 
@@ -67,6 +66,7 @@ function updateUI(buttonStates) {
     var h2 = lane.getElementsByTagName('h2')[0];
     var button = lane.getElementsByTagName('button')[0];
     var input = lane.getElementsByClassName('pilotName')[0];
+    updateStats(i, buttonStates[i].pitCount)
     if (buttonStates[i].countdown > 0) {
       button.innerHTML = buttonStates[i].countdown;
       button.disabled = true;
