@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="../favicon.png">
 </head>
 
 <body>
@@ -21,39 +21,38 @@
       </nav>
     </aside>
     <div class="header">
-      Soundboard
+      DRW Pit Caller - Soundboard
     </div>
   </div>
   <div id="lanes">
     <div class="card" id="lane1">
       <h2>Message 1</h2>
-      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(0, this.value)">
-      <button class="button" onclick="startPit(0)">Play</button>
+      <input type="text" class="pilotName" id="message1" placeholder="Enter Text">
+      <button class="button" onclick="playCustomMessage()">Play</button>
     </div>
     <div class="card" id="lane2">
       <h2>Message 2</h2>
-      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(1, this.value)">
-      <button class="button" onclick="startPit(1)">Play</button>
-    </div>
-    <div class="card" id="lane3">
-      <h2>Message 3</h2>
-      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(2, this.value)">
-      <button class="button" onclick="startPit(2)">Play</button>
-    </div>
-    <div class="card" id="lane4">
-      <h2>Message 4</h2>
-      <input type="text" class="pilotName" placeholder="Enter Text" oninput="updateLaneName(3, this.value)">
-      <button class="button" onclick="startPit(3)">Play</button>
+      <input type="text" class="pilotName" id="message2" placeholder="Enter Text">
+      <button class="button" onclick="playCustomMessage()">Play</button>
     </div>
   </div>
 
   <audio src="sounds/AirStrike.wav" id="AirStrike"></audio>
-  <audio src="sounds/Explosion1.wav" id="Explosion"></audio>
-  <audio src="sounds/NukeAnthem.wav" id="Anthem"></audio>
-  <audio src="sounds/SheepBaa.wav" id="Baa"></audio>
   <audio src="sounds/CowMoo.wav" id="Moo"></audio>
+  <audio src="sounds/cymbals.wav" id="Cymbals"></audio>
+  <audio src="sounds/dumdum.wav" id="Dumdum"></audio>
+  <audio src="sounds/Explosion.wav" id="Explosion"></audio>
+  <audio src="sounds/NukeAnthem.wav" id="Anthem"></audio>
+  <audio src="sounds/Puke.wav" id="Puke"></audio>
+  <audio src="sounds/rubber_ducky.wav" id="RubberDucky"></audio>
+  <audio src="sounds/SheepBaa.wav" id="Baa"></audio>
+  <audio src="sounds/trumpet.wav" id="Trumpet"></audio>
+  <audio src="sounds/warning_horn.wav" id="WarningHorn"></audio>
+  <audio src="sounds/whah_whah.wav" id="Waahwaah"></audio>
+  <audio src="sounds/woow.wav" id="Woow"></audio>
+  <audio src="sounds/yay.wav" id="Yaay"></audio>
   
-  <div class="card" id="buttons">
+  <div class="soundcard" id="buttons">
     <h2>Extra Sounds</h2>
   </div>
 

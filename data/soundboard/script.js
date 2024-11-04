@@ -1,10 +1,8 @@
-var websocket;
-
-const sounds = ['AirStrike', 'Explosion', 'Anthem', 'Baa', 'Moo'];
+const sounds = ['AirStrike', 'Explosion', 'Anthem', 'Baa', 'Moo', 'Cymbals', 'Dumdum', 'Puke', 'RubberDucky', 'Trumpet', 'WarningHorn', 'Waahwaah', 'Woow', 'Yaay'];
 
 sounds.forEach((sound) => {
   const btn = document.createElement('button');
-  btn.classList.add('button');
+  btn.classList.add('soundButton');
   btn.innerText = sound;
 
   btn.addEventListener('click', ()=> {
@@ -33,29 +31,6 @@ function closeNav() {
   document.getElementById("menuSidepanel").style.width = "0";
 }
 
-function initWebSocket() {
-  websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
-  websocket.onopen = function(event) { console.log('Connected to WebSocket'); };
-  websocket.onclose = function(event) { console.log('Disconnected from WebSocket'); };
-  websocket.onmessage = function(event) { handleWebSocketMessage(JSON.parse(event.data)); };
-}
-
-function startPit(lane) {
-  websocket.send('start' + lane);
-}
-
-function updateLaneName(lane, name) {
-  websocket.send('update' + lane + ':' + name);
-}
-
-function handleWebSocketMessage(message) {
-  if (message.type === 'update') {
-    updateUI(message.data);
-  } else if (message.type === 'announce') {
-    announcePitting(message.lane, message.pilotName);
-  }
-}
-
 // hack to force IOS devices to play audio on an event
 let hasEnabledVoice = false;
 
@@ -69,31 +44,28 @@ document.addEventListener('click', () => {
   hasEnabledVoice = true;
 });
 
+function playCustomMessage() {
+  // Find the closest card div to the button that was clicked
+  const button = event.target; // Get the button that triggered this function
+  const card = button.closest('.card'); // Find the closest parent card div
+  const input = card.querySelector('.pilotName'); // Select the input within this card
 
-function announcePitting(lane, pilotName) {
-  var text = pilotName;
-  var utterance = new SpeechSynthesisUtterance(text);
-  speechSynthesis.speak(utterance);
+  if (input && input.value) {
+    speakText(input.value); // Pass the input's value to the speakText function
+  } else {
+    console.error("No text found in input field.");
+  }
 }
 
-function updateUI(buttonStates) {
-  for (var i = 0; i < buttonStates.length; i++) {
-    var lane = document.getElementById('lane' + (i + 1));
-    var h2 = lane.getElementsByTagName('h2')[0];
-    var button = lane.getElementsByTagName('button')[0];
-    var input = lane.getElementsByClassName('pilotName')[0];
-    if (buttonStates[i].countdown > 0) {
-      button.innerHTML = buttonStates[i].countdown;
-      button.disabled = true;
-    } else {
-      button.innerHTML = 'Pit';
-      button.disabled = false;
-    }
-    h2.textContent = "Message: " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
-    input.value = buttonStates[i].pilotName || '';
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+  } else {
+      console.error("Speech Synthesis not supported in this browser.");
   }
 }
 
 window.onload = function(event) {
-  initWebSocket();
+
 }
