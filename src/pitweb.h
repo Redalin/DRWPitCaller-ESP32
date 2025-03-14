@@ -12,21 +12,22 @@ AsyncWebSocket ws("/ws");
 const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
-int countdownTimer = 3;
+int countdownTimer = 5;
 
 struct ButtonState {
   String label;
-  String pilotName;
+  String activePilot;
+  String inactivePilot;
   int countdown;
   bool isPitting;
   int pitCount;
 };
 
 ButtonState buttonStates[NUM_LANES] = {
-  {"Lane 1", "", 0, false, 0},
-  {"Lane 2", "", 0, false, 0},
-  {"Lane 3", "", 0, false, 0},
-  {"Lane 4", "", 0, false, 0}
+  {"Lane 1", "", "", 0, false, 0},
+  {"Lane 2", "", "", 0, false, 0},
+  {"Lane 3", "", "", 0, false, 0},
+  {"Lane 4", "", "", 0, false, 0}
 };
 
 void resetCountStats() {
@@ -40,7 +41,7 @@ void resetCountStats() {
 void notifyClients() {
   String message = "{\"type\":\"update\",\"data\":[";
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    message += "{\"label\":\"" + buttonStates[lane].label + "\",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"countdown\":" + String(buttonStates[lane].countdown) + ",\"isPitting\":" + (buttonStates[lane].isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
+    message += "{\"label\":\"" + buttonStates[lane].label + "\",\"activePilot\":\"" + buttonStates[lane].activePilot + "\",\"inactivePilot\":\"" + buttonStates[lane].inactivePilot + "\",\"countdown\":" + String(buttonStates[lane].countdown) + ",\"isPitting\":" + (buttonStates[lane].isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
     
     if (lane < NUM_LANES - 1) message += ",";
   }
@@ -49,10 +50,10 @@ void notifyClients() {
 }
 
 void announcePitting(int lane, bool isPitting) {
-  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"pilotName\":\"" + buttonStates[lane].pilotName + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
+  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"activePilot\":\"" + buttonStates[lane].activePilot + ",\"inactivePilot\":\"" + buttonStates[lane].inactivePilot + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
   // Serial.print("AnnouncePitting message is:  ");
   // Serial.println(message);
-  String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].pilotName + " " + (isPitting ? "Pitting" : "Leaving");
+  String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].activePilot + " " + (isPitting ? "Pitting" : "Leaving");
   displayText(oledMessage);
   ws.textAll(message);
 }
@@ -73,8 +74,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     } else if (message.startsWith("update")) {
       int lane = message.charAt(6) - '0';
       String name = message.substring(8);
-      buttonStates[lane].pilotName = name;
-      buttonStates[lane].label = "Lane " + String(lane + 1) + ": " + name;
+      buttonStates[lane].activePilot = name;
+      buttonStates[lane].label = "Team: " + name;
     } else if (message.startsWith("resetStats")){
       resetCountStats();
     }

@@ -8,7 +8,6 @@ function closeNav() {
   document.getElementById("menuSidepanel").style.width = "0";
 }
 
-
 var websocket;
 
 function initWebSocket() {
@@ -26,18 +25,11 @@ function updateLaneName(lane, name) {
   websocket.send('update' + lane + ':' + name);
 }
 
-function resetStats() {
-  websocket.send('resetStats');
-  for(var lane = 0; lane < 4; lane++) {
-    updateStats(lane, "0");
-  }
-}
-
 function handleWebSocketMessage(message) {
   if (message.type === 'update') {
     updateUI(message.data);
   } else if (message.type === 'announce') {
-    announcePitting(message.lane, message.pilotName, message.isPitting);
+    announcePitting(message.lane, message.pilotName);
   }
 }
 
@@ -54,39 +46,28 @@ document.addEventListener('click', () => {
   hasEnabledVoice = true;
 });
 
-function announcePitting(lane, pilotName, isPitting) {
-  var text = isPitting ? "Lane " + (lane + 1) + " pilot " + pilotName + "  is pitting" : "Lane " + (lane + 1) + " pilot " + pilotName + " is leaving the pits";
+function announcePitting(teamName, pilotName1, pilotName2) {
+  var text = "Team " + (teamName) + " is switching " + pilotName1 + " with " + pilotName2;
   var utterance = new SpeechSynthesisUtterance(text);
   speechSynthesis.speak(utterance);
 }
 
 function updateUI(buttonStates) {
   for (var i = 0; i < buttonStates.length; i++) {
-    var lane = document.getElementById('lane' + (i + 1));   
+    var lane = document.getElementById('lane' + (i + 1));
     var h2 = lane.getElementsByTagName('h2')[0];
     var button = lane.getElementsByTagName('button')[0];
     var input = lane.getElementsByClassName('pilotName')[0];
-    updateStats(i, buttonStates[i].pitCount)
     if (buttonStates[i].countdown > 0) {
       button.innerHTML = buttonStates[i].countdown;
       button.disabled = true;
-    } else if (buttonStates[i].isPitting) {
-      button.innerHTML = 'Leave Pit';
-      button.disabled = false;
-      button.style.backgroundColor = 'purple';
     } else {
-      button.innerHTML = 'Pit';
+      button.innerHTML = 'Pilot Switch';
       button.disabled = false;
-      button.style.backgroundColor = ""
     }
-    h2.textContent = "Lane " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
+    h2.textContent = "Team " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
     input.value = buttonStates[i].pilotName || '';
   }
-}
-
-function updateStats(lane, count) {
-  var laneStat = document.getElementById('stats' + (lane + 1));
-  laneStat.textContent = "Lane " + (lane + 1) + ": " + count;
 }
 
 window.onload = function(event) {

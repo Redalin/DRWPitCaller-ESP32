@@ -1,9 +1,10 @@
-// #include "config.h"
+#include "config.h"
+#include "connect-wifi.h" // Wi-Fi credentials
 #include <arduino.h>
 #include <ESPmDNS.h>
 #include <LittleFS.h>
-#include "connect-wifi.h"
 #include "pitweb.h"
+#include "display-pitcaller.h"
 
 // The include for the Display is now in pitWeb.h directly
 // This is so we can send the button press messages to the OLED display
@@ -21,27 +22,10 @@ void setup() {
   }
   Serial.println("LittleFS mounted successfully");
 
-  // Scan for known wifi Networks
-  WiFi.setHostname(hostname);
-  scanForWifi();
-  if(visibleNetworks > 0) {
-    displayText("Connecting to WiFi");
-    String wifiName = connectToWifi();
-    String wifiMessage = "Connected to: " + wifiName;
-    displayText(wifiMessage);
-  } else {
-    Serial.println(F("no networks found. Reset to try again"));
-    while (true); // no need to go further, hang in there, will auto launch the Soft WDT reset
-  }
-  
-  // Initialize mDNS
-  if (!MDNS.begin(hostname)) {   // Set the hostname
-    Serial.println("Error setting up MDNS responder!");
-    while(1) {
-      delay(1000);
-    }
-  }
-  Serial.println("mDNS responder started");
+
+  // initialise Wifi as per the connect-wifi file
+  initWifi();
+  initMDNS();
 
   ws.onEvent(onEvent);
   server.addHandler(&ws);
