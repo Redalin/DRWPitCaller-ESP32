@@ -1,4 +1,4 @@
-// #include "config.h"
+#include "config.h"
 #include <arduino.h>
 #include <ESPmDNS.h>
 #include <LittleFS.h>
@@ -22,26 +22,10 @@ void setup() {
   Serial.println("LittleFS mounted successfully");
 
   // Scan for known wifi Networks
-  WiFi.setHostname(hostname);
-  scanForWifi();
-  if(visibleNetworks > 0) {
-    displayText("Connecting to WiFi");
-    String wifiName = connectToWifi();
-    String wifiMessage = "Connected to: " + wifiName;
-    displayText(wifiMessage);
-  } else {
-    Serial.println(F("no networks found. Reset to try again"));
-    while (true); // no need to go further, hang in there, will auto launch the Soft WDT reset
-  }
+  initWifi();
   
   // Initialize mDNS
-  if (!MDNS.begin(hostname)) {   // Set the hostname
-    Serial.println("Error setting up MDNS responder!");
-    while(1) {
-      delay(1000);
-    }
-  }
-  Serial.println("mDNS responder started");
+  initMDNS();
 
   ws.onEvent(onEvent);
   server.addHandler(&ws);
