@@ -22,7 +22,7 @@
 #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-String textMessage = "Yo what's up!";
+String textMessage = "Getting ready...";
 
 void displayText(String message) {
   //Serial.println(F("Into text displaytext method"));  

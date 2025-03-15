@@ -25,7 +25,7 @@ void initMDNS() {
         }
     }
     Serial.println("mDNS responder started");
-    displayText("mDNS responder started");
+    // displayText("mDNS responder started");
 }
 
 void initWifi()
@@ -42,6 +42,7 @@ void initWifi()
   else
   {
     Serial.println(F("no networks found. Reset to try again"));
+    displayText("no networks found. Reset to try again");
     while (true)
       ; // no need to go further, hang in there, will auto launch the Soft WDT reset
   }
@@ -84,6 +85,7 @@ String connectToWifi() {
   {
     Serial.print(F("\nConnecting to "));
     Serial.println(KNOWN_SSID[n]);
+    displayText("Connecting to " + String(KNOWN_SSID[n]));
     WiFi.begin(KNOWN_SSID[n], KNOWN_PASSWORD[n]);
     while (WiFi.status() != WL_CONNECTED) {
       delay(1000);
