@@ -22,7 +22,6 @@ void setup() {
   }
   Serial.println("LittleFS mounted successfully");
 
-
   // initialise Wifi as per the connect-wifi file
   initWifi();
   initMDNS();
