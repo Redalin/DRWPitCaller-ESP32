@@ -25,11 +25,15 @@ function updateLaneName(lane, name) {
   websocket.send('update' + lane + ':' + name);
 }
 
+function updatePilotName(lane, pilotNum, name) {
+  websocket.send('update' + lane + ':' + pilotNum + ":" + name);
+}
+
 function handleWebSocketMessage(message) {
   if (message.type === 'update') {
     updateUI(message.data);
   } else if (message.type === 'announce') {
-    announcePitting(message.lane, message.pilotName);
+    announcePitting(message.lane, message.pilotName1, message.pilotName2);
   }
 }
 
@@ -46,8 +50,8 @@ document.addEventListener('click', () => {
   hasEnabledVoice = true;
 });
 
-function announcePitting(teamName, pilotName1, pilotName2) {
-  var text = "Team " + (teamName) + " is switching " + pilotName1 + " with " + pilotName2;
+function announcePitting(teamName, activePilot, standbyPilot) {
+  var text = "Team " + (teamName) + " is switching " + activePilot + " for " + standbyPilot;
   var utterance = new SpeechSynthesisUtterance(text);
   speechSynthesis.speak(utterance);
 }
@@ -56,8 +60,10 @@ function updateUI(buttonStates) {
   for (var i = 0; i < buttonStates.length; i++) {
     var lane = document.getElementById('lane' + (i + 1));
     var h2 = lane.getElementsByTagName('h2')[0];
+    var h3 = lane.getElementsByTagName('h3')[0];
+    var h4 = lane.getElementsByTagName('h4')[0];
     var button = lane.getElementsByTagName('button')[0];
-    var input = lane.getElementsByClassName('pilotName')[0];
+    var pilotName1 = lane.getElementsByClassName('pilotName1')[0];
     if (buttonStates[i].countdown > 0) {
       button.innerHTML = buttonStates[i].countdown;
       button.disabled = true;
@@ -65,7 +71,9 @@ function updateUI(buttonStates) {
       button.innerHTML = 'Pilot Switch';
       button.disabled = false;
     }
-    h2.textContent = "Team " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
+    h2.textContent = "Team: " + (i + 1) + (buttonStates[i].pilotName ? ": " + buttonStates[i].pilotName : "");
+    h3.textContent = "Pilot: " + (buttonStates[i].activePilot || 'None'); 
+    h4.textContent = "Standby: " + (buttonStates[i].standbyPilot || 'None');
     input.value = buttonStates[i].pilotName || '';
   }
 }

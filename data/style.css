@@ -225,7 +225,7 @@ body {
     transform: translateY(2px);
 }
 
-.pilotName,
+.inputbox,
 .message {
     margin-top: 5px;
     padding: 10px;

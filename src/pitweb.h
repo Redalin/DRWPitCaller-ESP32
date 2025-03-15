@@ -17,7 +17,7 @@ int countdownTimer = 5;
 struct ButtonState {
   String label;
   String activePilot;
-  String inactivePilot;
+  String standbyPilot;
   int countdown;
   bool isPitting;
   int pitCount;
@@ -41,7 +41,7 @@ void resetCountStats() {
 void notifyClients() {
   String message = "{\"type\":\"update\",\"data\":[";
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    message += "{\"label\":\"" + buttonStates[lane].label + "\",\"activePilot\":\"" + buttonStates[lane].activePilot + "\",\"inactivePilot\":\"" + buttonStates[lane].inactivePilot + "\",\"countdown\":" + String(buttonStates[lane].countdown) + ",\"isPitting\":" + (buttonStates[lane].isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
+    message += "{\"label\":\"" + buttonStates[lane].label + "\",\"activePilot\":\"" + buttonStates[lane].activePilot + "\",\"standbyPilot\":\"" + buttonStates[lane].standbyPilot + "\",\"countdown\":" + String(buttonStates[lane].countdown) + ",\"isPitting\":" + (buttonStates[lane].isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
     
     if (lane < NUM_LANES - 1) message += ",";
   }
@@ -50,7 +50,7 @@ void notifyClients() {
 }
 
 void announcePitting(int lane, bool isPitting) {
-  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"activePilot\":\"" + buttonStates[lane].activePilot + ",\"inactivePilot\":\"" + buttonStates[lane].inactivePilot + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
+  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"activePilot\":\"" + buttonStates[lane].activePilot + ",\"standbyPilot\":\"" + buttonStates[lane].standbyPilot + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
   // Serial.print("AnnouncePitting message is:  ");
   // Serial.println(message);
   String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].activePilot + " " + (isPitting ? "Pitting" : "Leaving");

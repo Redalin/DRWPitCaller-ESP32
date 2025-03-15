@@ -2,6 +2,7 @@
 #include "connect-wifi.h"
 #include "config.h"
 #include <ESPmDNS.h>
+#include "display-pitcaller.h"
 
 // The device hostname
 const char* hostname = "DRWCaller";
@@ -24,6 +25,7 @@ void initMDNS() {
         }
     }
     Serial.println("mDNS responder started");
+    displayText("mDNS responder started");
 }
 
 void initWifi()
@@ -35,6 +37,7 @@ void initWifi()
   {
     String wifiName = connectToWifi();
     String wifiMessage = "Connected to: " + wifiName;
+    displayText(wifiMessage);
   }
   else
   {

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Lane Pit Control</title>
+  <title>Admin Page - DroneGP</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -10,41 +10,40 @@
 </head>
 
 <body>
-  <div class="topnav">
-    <div class="header">
-      Admin Page - DroneGP
-    </div>
-  </div>
   <div id="lanes">
     <div class="card" id="lane1">
       <h2>Lane 1</h2>
-      <input type="text" class="pilotName" placeholder="Team Name" oninput="updateLaneName(0, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 1" oninput="updatePilotName1(0, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 2" oninput="updatePilotName2(0, this.value)">
+      <input type="text" class="inputbox" placeholder="Team Name" oninput="updateLaneName(0, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 1" oninput="updatePilotName(0, 1, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 2" oninput="updatePilotName(0, 2, this.value)">
       <!-- <button class="button" onclick="startPit(0)">Pit</button> -->
     </div>
     <div class="card" id="lane2">
       <h2>Lane 2</h2>
-      <input type="text" class="pilotName" placeholder="Team Name" oninput="updateLaneName(1, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 1" oninput="updatePilotName1(1, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 2" oninput="updatePilotName2(1, this.value)">
+      <input type="text" class="inputbox" placeholder="Team Name" oninput="updateLaneName(1, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 1" oninput="updatePilotName(1, 1, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 2" oninput="updatePilotName(1, 2, this.value)">
       <!-- <button class="button" onclick="startPit(1)">Pit</button> -->
     </div>
     <div class="card" id="lane3">
       <h2>Lane 3</h2>
-      <input type="text" class="pilotName" placeholder="Team Name" oninput="updateLaneName(2, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 1" oninput="updatePilotName1(2, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 2" oninput="updatePilotName2(2, this.value)">
+      <input type="text" class="inputbox" placeholder="Team Name" oninput="updateLaneName(2, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 1" oninput="updatePilotName(2, 1, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 2" oninput="updatePilotName(2, 2, this.value)">
       <!-- <button class="button" onclick="startPit(2)">Pit</button> -->
     </div>
     <div class="card" id="lane4">
       <h2>Lane 4</h2>
-      <input type="text" class="pilotName" placeholder="Team Name" oninput="updateLaneName(3, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 1" oninput="updatePilotName1(3, this.value)">
-      <input type="text" class="pilotName" placeholder="Pilot Name 2" oninput="updatePilotName2(3, this.value)">
+      <input type="text" class="inputbox" placeholder="Team Name" oninput="updateLaneName(3, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 1" oninput="updatePilotName(3, 1, this.value)">
+      <input type="text" class="inputbox" placeholder="Pilot Name 2" oninput="updatePilotName(3, 2, this.value)">
       <!-- <button class="button" onclick="startPit(3)">Pit</button> -->
     </div>
   </div>
+  <a href="lane1.html">Lane 1</a>
+  <a href="lane2.html">Lane 2</a>
+  <a href="lane3.html">Lane 3</a>
+  <a href="lane4.html">Lane 4</a> 
   <script src="script.js"></script>
 </body>
 
