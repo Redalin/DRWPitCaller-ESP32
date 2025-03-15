@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Input Box</title>
+  <style>
+    .input-container {
+      display: flex;
+      align-items: center;
+    }
+    .input-container input {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 5px;
+      width: 200px;
+    }
+    .input-container button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    .input-container button:hover {
+      color: #007bff;
+    }
+    .input-container button:focus {
+      outline: none;
+    }
+    .input-container button svg {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="input-container">
+    <input type="text" id="editableInput" value="Default Text" readonly>
+    <button id="editButton" title="Edit">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-2.036a2.5 2.5 0 113.536 3.536L7 21H3v-4L16.732 6.732z" />
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    const input = document.getElementById('editableInput');
+    const editButton = document.getElementById('editButton');
+
+    editButton.addEventListener('click', () => {
+      if (input.hasAttribute('readonly')) {
+        input.removeAttribute('readonly');
+        input.focus();
+        editButton.title = "Save";
+        editButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>`;
+      } else {
+        input.setAttribute('readonly', true);
+        editButton.title = "Edit";
+        editButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-2.036a2.5 2.5 0 113.536 3.536L7 21H3v-4L16.732 6.732z" />
+          </svg>`;
+      }
+    });
+  </script>
+</body>
+</html>

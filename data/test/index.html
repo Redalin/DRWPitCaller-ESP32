@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Lane Pit Control</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <link rel="icon" type="image/png" href="../favicon.png">
+</head>
+
+<body>
+  <div class="topnav">
+    <label class="hamburger-menu">
+      <input type="checkbox">
+    </label>
+    <aside class="sidebar">
+      <nav>
+        <a href="../classic/index.html">Classic</a>
+        <a href="../soundboard/index.html">Soundboard</a>
+      </nav>
+    </aside>
+    <div class="header">
+      DRW Pit Caller
+    </div>
+  </div>
+  <div id="lanes">
+    <div class="card" id="lane1">
+      <h2>Lane 1</h2>
+      <div class="input-container">
+        <input type="text" class="pilotName" id="editableInput" placeholder="Pilot Name" readonly oninput="updateLaneName(0, this.value)">
+        <button class="button" onclick="startPit(0)">Pit</button>
+        <button class="editbutton" id="editButton" title="Edit">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-2.036a2.5 2.5 0 113.536 3.536L7 21H3v-4L16.732 6.732z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="card" id="lane2">
+      <h2>Lane 2</h2>
+      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(1, this.value)">
+      <button class="button" onclick="startPit(1)">Pit</button>
+    </div>
+    <div class="card" id="lane3">
+      <h2>Lane 3</h2>
+      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(2, this.value)">
+      <button class="button" onclick="startPit(2)">Pit</button>
+    </div>
+    <div class="card" id="lane4">
+      <h2>Lane 4</h2>
+      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(3, this.value)">
+      <button class="button" onclick="startPit(3)">Pit</button>
+    </div>
+    <div class="card">
+      <h2>Pit Stats</h2>
+      <table>
+        <tr>
+          <td>
+            <div class="stats" id="stats1">Lane 1: 0</div>
+            <div class="stats" id="stats2">Lane 2: 0</div>
+            <div class="stats" id="stats3">Lane 3: 0</div>
+            <div class="stats" id="stats4">Lane 4: 0</div>
+          </td>
+          <td>
+            <button class="button StatsButton" onclick="resetStats()">Reset</button>
+          </td>
+        </tr>
+      </table>      
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
