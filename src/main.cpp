@@ -1,8 +1,6 @@
 #include "config.h"
 #include "connect-wifi.h" // Wi-Fi credentials
 #include <arduino.h>
-#include <ESPmDNS.h>
-#include <LittleFS.h>
 #include "pitweb.h"
 #include "display-pitcaller.h"
 
@@ -16,39 +14,21 @@ void setup() {
   // Setup the OLED Display
   displaysetup();
 
-  if (!LittleFS.begin()) {
-    Serial.println("An error has occurred while mounting LittleFS");
-    return;
-  }
-  Serial.println("LittleFS mounted successfully");
+  // initialise the LittleFS
+  initLittleFS();
 
   // initialise Wifi as per the connect-wifi file
   initWifi();
   initMDNS();
 
-  ws.onEvent(onEvent);
-  server.addHandler(&ws);
+  // initialise the websocket and web server
+  initwebservers();
 
-  Serial.println("Starting Web Server");
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(LittleFS, "/index.html", "text/html");
-  });
-  server.on("/favicon.png", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(LittleFS, "/favicon.png", "image/png");
-  });
-
-  server.serveStatic("/", LittleFS, "/");
-  server.begin();
-
-  for (int i = 0; i < NUM_LANES; i++) {
-    buttonStates[i].countdown = 0;
-    pinMode(lanePins[i], INPUT_PULLUP); // Assuming switch closes to ground
-  }
 
 }
 
 void loop() {
-  ws.cleanupClients();
+  cleanupWebClients();
   // checkLaneSwitches();
 
   unsigned long currentTime = millis();
