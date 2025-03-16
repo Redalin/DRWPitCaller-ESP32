@@ -47,6 +47,14 @@ button:active {
     transform: translateY(2px);
 }
 
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: translateY(2px);
+}
+
 .admin-section {
     display: flex;
     flex-wrap: wrap;
