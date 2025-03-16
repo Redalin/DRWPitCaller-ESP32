@@ -1,6 +1,14 @@
+function initWebSocket() {
+    websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
+    websocket.onopen = function(event) { console.log('Connected to WebSocket'); };
+    websocket.onclose = function(event) { console.log('Disconnected from WebSocket'); };
+    websocket.onmessage = function(event) { handleWebSocketMessage(JSON.parse(event.data)); };
+}
+  
 function updateTeamName(selectElement, teamId) {
     const selectedTeamName = selectElement.value;
     document.querySelector(`#${teamId} .team-name`).textContent = selectedTeamName;
+    websocket.send(`update${teamId}:${selectedTeamName}`);
 }
 
 function pilotSwap(teamId, buttonId) {
@@ -10,8 +18,8 @@ function pilotSwap(teamId, buttonId) {
 
     teamBox.style.backgroundColor = 'yellow';
 
-    const announcement = new SpeechSynthesisUtterance(`Pilot swap announced: ${teamName}`);
-    window.speechSynthesis.speak(announcement);
+    const announcement = (`Pilot swap announced: ${teamName}`);
+    voiceAnnounce(announcement);
 
     button.disabled = true;
 
@@ -20,5 +28,22 @@ function pilotSwap(teamId, buttonId) {
         button.disabled = false;
     }, 20000);
 
+    websocket.send(`pilotSwap: ${teamId}`);
+}
 
+function voiceAnnounce(text) {
+    const announcement = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(announcement);
+}
+
+function handleWebSocketMessage(message) {
+    if (message.type === 'update') {
+        updateUI(message.data);
+    } else if (message.type === 'pilotSwap') {
+        pilotSwap(message.teamId, message.buttonId);
+    }
+}
+
+window.onload = function(event) {
+    initWebSocket();
 }

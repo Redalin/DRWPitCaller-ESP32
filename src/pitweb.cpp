@@ -9,11 +9,17 @@ unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
 int countdownTimer = 5;
 
+// struct ButtonState {
+//   String TeamName;
+//   int countdown;
+//   bool isPitting;
+// };
+
 ButtonState buttonStates[NUM_LANES] = {
-  {"Lane 1", "", "", 0, false, 0},
-  {"Lane 2", "", "", 0, false, 0},
-  {"Lane 3", "", "", 0, false, 0},
-  {"Lane 4", "", "", 0, false, 0}
+  {"Lane 1", 0},
+  {"Lane 2", 0},
+  {"Lane 3", 0},
+  {"Lane 4", 0}
 };
 
 
@@ -56,7 +62,7 @@ void cleanupWebClients() {
 void notifyClients() {
   String message = "{\"type\":\"update\",\"data\":[";
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    message += "{\"label\":\"" + buttonStates[lane].label + "\",\"activePilot\":\"" + buttonStates[lane].activePilot + "\",\"standbyPilot\":\"" + buttonStates[lane].standbyPilot + "\",\"countdown\":" + String(buttonStates[lane].countdown) + ",\"isPitting\":" + (buttonStates[lane].isPitting ? "true" : "false") + ",\"pitCount\":" + buttonStates[lane].pitCount + "}";
+    message += "{\"teamName\":\"" + buttonStates[lane].teamName + "\",\"countdown\":" + String(buttonStates[lane].countdown) + "}";
     
     if (lane < NUM_LANES - 1) message += ",";
   }
@@ -64,11 +70,11 @@ void notifyClients() {
   ws.textAll(message);
 }
 
-void announcePitting(int lane, bool isPitting) {
-  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + ",\"activePilot\":\"" + buttonStates[lane].activePilot + ",\"standbyPilot\":\"" + buttonStates[lane].standbyPilot + "\",\"isPitting\":" + (isPitting ? "true" : "false") + "}";
-  // Serial.print("AnnouncePitting message is:  ");
-  // Serial.println(message);
-  String oledMessage = "Lane:" + String(lane+1) + " " + buttonStates[lane].activePilot + " " + (isPitting ? "Pitting" : "Leaving");
+void announcePilotSwap(int lane) {
+  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + "}";
+  Serial.print("AnnouncePitting message is:  ");
+  Serial.println(message);
+  String oledMessage = "Lane:" + String(lane+1) + " is Pilot Swap";
   displayText(oledMessage);
   ws.textAll(message);
 }
@@ -78,19 +84,17 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
     String message = (char*)data;
-    if (message.startsWith("start")) {
-      int lane = message.substring(5).toInt();
+    if (message.startsWith("pilotSwap")) {
+      Serial.println("Received message: " + message);
+      int lane = message.substring(1).toInt();
+      Serial.println("Substring5 = " + String(lane));
       buttonStates[lane].countdown = countdownTimer;
       countdownTimers[lane] = millis();
-      buttonStates[lane].isPitting = !buttonStates[lane].isPitting; // change the pitting flag
-      buttonStates[lane].pitCount++;  // increment the count for number of pit events
-      // Serial.println((String)"Incrementing Lane " + (lane + 1) + " pit count to " + buttonStates[lane].pitCount);
-      announcePitting(lane, buttonStates[lane].isPitting);
+      announcePilotSwap(lane);
     } else if (message.startsWith("update")) {
       int lane = message.charAt(6) - '0';
       String name = message.substring(8);
-      buttonStates[lane].activePilot = name;
-      buttonStates[lane].label = "Team: " + name;
+      buttonStates[lane].teamName = "Team: " + name;
     } else {
       Serial.println("Unknown message: " + message);
     }
@@ -114,9 +118,7 @@ void checkLaneSwitches() {
         buttonStates[lane].countdown = countdownTimer;
         countdownTimers[lane] = millis();
         notifyClients();
-        buttonStates[lane].isPitting = !buttonStates[lane].isPitting; // change the pitting flag for a button press
-        buttonStates[lane].pitCount++;  
-        announcePitting(lane, buttonStates[lane].isPitting);
+        announcePilotSwap(lane);
       }
     }
   }

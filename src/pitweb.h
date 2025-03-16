@@ -9,12 +9,8 @@
 #include <LittleFS.h>
 
 struct ButtonState {
-  String label;
-  String activePilot;
-  String standbyPilot;
+  String teamName;
   int countdown;
-  bool isPitting;
-  int pitCount;
 };
 
 #define NUM_LANES 4
