@@ -72,9 +72,9 @@ void notifyClients() {
 
 void announcePilotSwap(int lane) {
   String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + "}";
-  Serial.print("AnnouncePitting message is:  ");
+  Serial.print("announcePilotSwap message is:  ");
   Serial.println(message);
-  String oledMessage = "Lane:" + String(lane+1) + " is Pilot Swap";
+  String oledMessage = "Lane " + String(lane+1) + ": Pilot Swap";
   displayText(oledMessage);
   ws.textAll(message);
 }
