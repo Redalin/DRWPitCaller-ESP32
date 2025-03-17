@@ -9,6 +9,6 @@ void initMDNS();
 void initWifi();
 int scanForWifi();
 String connectToWifi();
-void createWifi();
+String createWifi();
 
 #endif  // CONNECT_WIFI_H

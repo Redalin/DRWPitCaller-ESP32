@@ -42,12 +42,11 @@ void initWifi()
   }
   else
   {
-    wifiMessage = "No known networks found, creating our own";
+    wifiMessage = "No known networks found";
     displayText(wifiMessage);
     Serial.println(wifiMessage);
-    createWifi();
-    // while (true);
-    // no need to go further, hang in there, will auto launch the Soft WDT reset
+    while (true);
+    // We should not be here, no need to go further, hang in there, will auto launch the Soft WDT reset
   }
 }
 
@@ -102,14 +101,18 @@ String connectToWifi() {
   else 
   {
     String message = "No WiFi found, creating our own";
+    Serial.println(message);
+    displayText(message);
+    createWifi();
     return message;
   }
 
 }
 
-void createWifi() {
+String createWifi() {
   IPAddress IP = WiFi.softAP("DRW.local", "wellington");
-  String apMessage = "Created Wifi" + IP.toString();
+  String apMessage = "Created Wifi " + IP.toString();
   Serial.println(apMessage);
   displayText(apMessage);
+  return "DRW.local";
 }

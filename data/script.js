@@ -39,13 +39,47 @@ function voiceAnnounce(text) {
 
 function handleWebSocketMessage(message) {
     if (message.type === 'update') {
-        // we don't need to do anything here because we're already calling the
-        // updateTeamName function
-        // updateUI(message.data);
+        const teamElement = document.querySelector(`#${message.teamId} .team-name`);
+        if (teamElement) {
+            teamElement.textContent = message.teamName;
+        }
     } else if (message.type === 'pilotSwap') {
-        // we don't need to do anything because we're already calling the voice 
-        // from the pilotSwap function
-        // pilotSwap(message.teamId, message.buttonId);
+        const teamBox = document.getElementById(message.teamId);
+        const button = document.getElementById(message.buttonId);
+
+        if (teamBox && button) {
+            teamBox.style.backgroundColor = 'yellow';
+            voiceAnnounce(`Pilot swap announced: ${teamBox.querySelector('.team-name').textContent}`);
+            button.disabled = true;
+
+            setTimeout(() => {
+                teamBox.style.backgroundColor = '';
+                button.disabled = false;
+            }, 20000);
+        }
+    } else if (message.type === 'status') {
+        message.teams.forEach(team => {
+            const teamElement = document.querySelector(`#${team.id} .team-name`);
+            if (teamElement) {
+                teamElement.textContent = team.name;
+            }
+        });
+
+        message.pilotSwaps.forEach(swap => {
+            const teamBox = document.getElementById(swap.teamId);
+            const button = document.getElementById(swap.buttonId);
+
+            if (teamBox && button) {
+                teamBox.style.backgroundColor = 'yellow';
+                voiceAnnounce(`Pilot swap announced: ${teamBox.querySelector('.team-name').textContent}`);
+                button.disabled = true;
+
+                setTimeout(() => {
+                    teamBox.style.backgroundColor = '';
+                    button.disabled = false;
+                }, 20000);
+            }
+        });
     } else {
         // nothing here either. 
     }
