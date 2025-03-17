@@ -3,12 +3,13 @@ function initWebSocket() {
     websocket.onopen = function(event) { console.log('Connected to WebSocket'); };
     websocket.onclose = function(event) { console.log('Disconnected from WebSocket'); };
     websocket.onmessage = function(event) { handleWebSocketMessage(JSON.parse(event.data)); };
+    websocket.onerror = function(event) { console.error('WebSocket error:', event); }; // Add error handling
 }
   
 function updateTeamName(selectElement, teamId) {
     const selectedTeamName = selectElement.value;
     document.querySelector(`#${teamId} .team-name`).textContent = selectedTeamName;
-    websocket.send(`update${teamId}:${selectedTeamName}`);
+    websocket.send(JSON.stringify({ type: 'update', teamId: teamId, teamName: selectedTeamName })); // Ensure correct data format
 }
 
 function pilotSwap(teamId, buttonId) {
@@ -28,7 +29,7 @@ function pilotSwap(teamId, buttonId) {
         button.disabled = false;
     }, 20000);
 
-    websocket.send(`pilotSwap: ${teamId}`);
+    websocket.send(JSON.stringify({ type: 'pilotSwap', teamId: teamId, buttonId: buttonId })); // Ensure correct data format
 }
 
 function voiceAnnounce(text) {
@@ -38,9 +39,15 @@ function voiceAnnounce(text) {
 
 function handleWebSocketMessage(message) {
     if (message.type === 'update') {
-        updateUI(message.data);
+        // we don't need to do anything here because we're already calling the
+        // updateTeamName function
+        // updateUI(message.data);
     } else if (message.type === 'pilotSwap') {
-        pilotSwap(message.teamId, message.buttonId);
+        // we don't need to do anything because we're already calling the voice 
+        // from the pilotSwap function
+        // pilotSwap(message.teamId, message.buttonId);
+    } else {
+        // nothing here either. 
     }
 }
 
