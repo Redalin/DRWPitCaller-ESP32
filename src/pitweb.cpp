@@ -1,4 +1,5 @@
 // Removing the Pitcaller stuff into another file also
+#include "config.h"
 #include <AsyncTCP.h>
 #include <AsyncWebSocket.h>
 #include "display-pitcaller.h"
@@ -8,7 +9,7 @@
 const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
-int countdownTimer = 5;
+int countdownTimer = 20;
 
 // struct ButtonState {
 //   String TeamName;
@@ -60,10 +61,11 @@ void initwebservers(){
 // This function takes a lane number and formats a message
 // It then sends the message to all connected clients
 void announcePilotSwap(int lane) {
-  String message = "{\"type\":\"announce\",\"team\":" + String(lane) + "}";
-  Serial.print("announcePilotSwap message is:  ");
-  Serial.println(message);
-  String oledMessage = "Lane " + String(lane+1) + ": Pilot Swap";
+  String message = "{\"type\":\"pilotSwap\",\"team\":" + String(lane) + "}";
+  debug("announcePilotSwap message is:  ");
+  debugln(message);
+  buttonStates[lane-1].countdown = countdownTimer;
+  String oledMessage = "Lane " + String(lane) + ": Pilot Swap";
   displayText(oledMessage);
   ws.textAll(message);
 }
@@ -73,19 +75,19 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
     //client->text("Connected");
     notifyClients();
   } else if (type == WS_EVT_DATA) {
-    // Serial.println("OnEvent WS_EVT_Data received");
-    Serial.println("Data is: " + String((char*)data));
+    debugln("OnEvent WS_EVT_Data received");
+    debugln("Data is: " + String((char*)data));
     handleWebSocketMessage(arg, data, len);
   }
 }
 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
-  Serial.println("Handling Websocket message");
+  debugln("Handling Websocket message");
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
     String message = (char*)data;
-    Serial.println("Message is: " + message);
+    debugln("Message is: " + message);
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, message);
     if (error) {
@@ -97,35 +99,35 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     if (type == "pilotSwap") {
       String teamId = doc["teamId"];
       String buttonId = doc["buttonId"];
-      Serial.println("Received pilotSwap message for team: " + teamId + " with button: " + buttonId);
-      int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
-      buttonStates[lane].countdown = countdownTimer;
-      countdownTimers[lane] = millis();
+      debugln("Received pilotSwap message for team: " + teamId + " with button: " + buttonId);
+      int lane = teamId.toInt();
       announcePilotSwap(lane);
       notifyClients(); // Ensure clients are notified after pilot swap
+
     } else if (type == "update") {
       String teamId = doc["teamId"];
       String teamName = doc["teamName"];
-      Serial.println("Received update message for team: " + teamId + " with name: " + teamName);
+      debugln("Received update message for team: " + teamId + " with name: " + teamName);
       int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
       buttonStates[lane].teamName = teamName;
       notifyClients(); // Ensure clients are notified after update
     } else {
-      Serial.println("Unknown message type: " + type);
+      debugln("Unknown message type: " + type);
     }
   } else {
-    Serial.println("Unknown message type");
+    debugln("Unknown message type");
   }
 }
 
 void checkLaneSwitches() {
   for (int lane = 0; lane < NUM_LANES; lane++) {
     if (digitalRead(lanePins[lane]) == HIGH) { // Assuming switch opens to high
+      debugln("Lane " + String(lane+1) + " pressed");
       if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
         buttonStates[lane].countdown = countdownTimer;
         countdownTimers[lane] = millis();
         notifyClients();
-        announcePilotSwap(lane);
+        announcePilotSwap(lane+1); // add 1 because lane is 0 indexed
       }
     }
   }
@@ -139,7 +141,7 @@ void notifyClients() {
     if (lane < NUM_LANES - 1) message += ",";
   }
   message += "]}";
-  Serial.println("NotifyClients message is: " + message);
+  debugln("NotifyClients message is: " + message);
   ws.textAll(message);
 }
 

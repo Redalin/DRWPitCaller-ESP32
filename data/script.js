@@ -6,7 +6,7 @@ function initWebSocket() {
         try {
             handleWebSocketMessage(JSON.parse(event.data));
         } catch (e) {
-            console.error('Invalid JSON 1.18:', event.data);
+            console.error('Invalid JSON 1.22:', event.data);
         }
     };
     websocket.onerror = function(event) { console.error('WebSocket error:', event); }; // Add error handling
@@ -24,20 +24,18 @@ function updateTeamName(selectElement, teamId) {
 // takes single team update with name, id, countdown and buttonId.
 // sends or returns nothing. 
 function updateTeamBox(teamName, teamId, countdown, buttonId) {
-    console.log('updateTeamBox: ', teamId, " -> ", teamName, countdown, buttonId);
-    // console.log('updateTeamNameV2: ', teamId, " -> ", teamName);
+    // console.log('updateTeamBox: ', teamId, " -> ", teamName, countdown, buttonId);
     document.querySelector(`#${teamId} .team-name`).textContent = teamName;
 
     const teamBox = document.getElementById(teamId);
-    //const teamName = teamBox.querySelector('.team-name').textContent;
     const button = document.getElementById(buttonId);
     if (countdown > 0) {
-        console.log('Disable the button');
-        //button.disabled = true;
+        // console.log('Disable the button');
+        button.disabled = true;
         teamBox.style.backgroundColor = 'yellow';
     } else {
-        console.log('Enable the button');
-        //button.disabled = false;
+        // console.log('Enable the button');
+        button.disabled = false;
         teamBox.style.backgroundColor = '';
     }
 
@@ -46,24 +44,17 @@ function updateTeamBox(teamName, teamId, countdown, buttonId) {
 // takes teamId, buttonId and countdown as arguments for a single lane update.
 // sends a websocket with json data to notify other clients.
 function pilotSwap(teamId, buttonId) {
+    console.log('pilotSwap: ', teamId, " -> ", buttonId);
     const teamBox = document.getElementById(teamId);
+    // const teamID = teamId.substring(4);
     const teamName = teamBox.querySelector('.team-name').textContent;
-    const button = document.getElementById(buttonId);
-    //const teamCountdown = countdown;
-
-    // teamBox.style.backgroundColor = 'yellow';
+    // const button = document.getElementById(buttonId);
+    // console.log('pilotSwap: ', teamID, " -> ", teamBox.id, teamName, button.id);
 
     const announcement = (`Pilot swap announced: ${teamName}`);
     voiceAnnounce(announcement);
 
-    // button.disabled = true;
-
-    // setTimeout(() => {
-    //     teamBox.style.backgroundColor = '';
-    //     button.disabled = false;
-    // }, countdown);
-
-    websocket.send(JSON.stringify({ type: 'pilotSwap', teamId: teamBox, buttonId: button })); // Ensure correct data format
+    // websocket.send(JSON.stringify({ type: 'pilotSwap', teamId: teamID, buttonId: button.id })); // Ensure correct data format
 }
 
 function voiceAnnounce(text) {
@@ -72,47 +63,30 @@ function voiceAnnounce(text) {
 }
 
 function updateTeamsUI(UIdata) {
-    console.log('updateTeamsUI: ', UIdata);
+    // console.log('updateTeamsUI: ', UIdata);
     for (var i = 0; i < UIdata.length; i++) {
         const teamName = UIdata[i].teamName;
         const countdown = UIdata[i].countdown;
         const teamId = 'team' + (i + 1);
-        const buttonId = 'button' + (i + 1);
+        const buttonId = 'pilotSwapButton' + (i + 1);
 
-        console.log('Calling updateTeamBox with: ', teamId,  teamName, countdown, buttonId);
+        //console.log('Calling updateTeamBox with: ', teamId,  teamName, countdown, buttonId);
         updateTeamBox(teamName, teamId, countdown, buttonId);
     }
-    // console.log('updateTeamsUI done');
 }
 
 function handleWebSocketMessage(message) {
     if (message.type === 'update') {
-        console.log('handleWebsocket update: ', message);
-        // console.log('handleWebsocket sending -> updateUI: ', message.data);
-        // console.log('handleWebsocket updateUI.length: ', message.data.length);
+        // console.log('handle JS Websocket update: ', message);
         updateTeamsUI(message.data);
-    } else if (message.type === 'pilotSwap') {
-        console.log('pilotSwap: ', message);
-        const teamBox = document.getElementById(message.teamId);
-        const button = document.getElementById(message.buttonId);
-
-        if (teamBox && button) {
-            teamBox.style.backgroundColor = 'yellow';
-            voiceAnnounce(`Pilot swap announced: ${teamBox.querySelector('.team-name').textContent}`);
-            button.disabled = true;
-
-            setTimeout(() => {
-                teamBox.style.backgroundColor = '';
-                button.disabled = false;
-            }, message.countdown);
-        }
-    } else if (message.type === 'status' || message.type === 'NotifyClients') {
-        console.log('status: ', message);
-        console.log('NotifyClients: ', message.data);
-        // updateUI(message);
-    } else {
-        console.log('Unknown message type to handle: ', message);
-        // nothing here either. 
+    }  
+    
+    // This code removed as not needed, but kept for reference in case we need to enable voice synthesis for the pit button 
+    else if (message.type === 'pilotSwap') {
+       console.log('handle JS Websocket pilotSwap: ', message);
+        const teamId = 'team' + message.team;
+        const buttonId = 'pilotSwapButton' + message.team;
+        pilotSwap(teamId, buttonId);
     }
 }
 
