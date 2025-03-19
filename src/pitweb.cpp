@@ -13,7 +13,6 @@ int countdownTimer = 5;
 // struct ButtonState {
 //   String TeamName;
 //   int countdown;
-//   bool isPitting;
 // };
 
 ButtonState buttonStates[NUM_LANES] = {
@@ -61,7 +60,7 @@ void initwebservers(){
 // This function takes a lane number and formats a message
 // It then sends the message to all connected clients
 void announcePilotSwap(int lane) {
-  String message = "{\"type\":\"announce\",\"lane\":" + String(lane) + "}";
+  String message = "{\"type\":\"announce\",\"team\":" + String(lane) + "}";
   Serial.print("announcePilotSwap message is:  ");
   Serial.println(message);
   String oledMessage = "Lane " + String(lane+1) + ": Pilot Swap";
@@ -71,10 +70,11 @@ void announcePilotSwap(int lane) {
 
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
   if (type == WS_EVT_CONNECT) {
-    client->text("Connected");
+    //client->text("Connected");
     notifyClients();
   } else if (type == WS_EVT_DATA) {
-    Serial.println("WS_EVT_Data received");
+    // Serial.println("OnEvent WS_EVT_Data received");
+    Serial.println("Data is: " + String((char*)data));
     handleWebSocketMessage(arg, data, len);
   }
 }
@@ -108,7 +108,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       String teamName = doc["teamName"];
       Serial.println("Received update message for team: " + teamId + " with name: " + teamName);
       int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
-      buttonStates[lane].teamName = "Team: " + teamName;
+      buttonStates[lane].teamName = teamName;
       notifyClients(); // Ensure clients are notified after update
     } else {
       Serial.println("Unknown message type: " + type);
@@ -139,6 +139,7 @@ void notifyClients() {
     if (lane < NUM_LANES - 1) message += ",";
   }
   message += "]}";
+  Serial.println("NotifyClients message is: " + message);
   ws.textAll(message);
 }
 
