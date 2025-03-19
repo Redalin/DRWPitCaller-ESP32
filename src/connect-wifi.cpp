@@ -112,7 +112,7 @@ String connectToWifi() {
 String createWifi() {
   IPAddress IP = WiFi.softAP("DRW.local", "wellington");
   String apMessage = "Created Wifi " + IP.toString();
-  Serial.println(apMessage);
-  displayText(apMessage);
+  Serial.println(apMessage + WiFi.localIP().toString());
+  displayText(WiFi.localIP().toString());
   return "DRW.local";
 }
