@@ -73,8 +73,8 @@ String connectToWifi() {
     Serial.println(WiFi.SSID(i)); // Print current SSID
     for (n = 0; n < KNOWN_SSID_COUNT; n++) { // walk through the list of known SSID and check for a match
       if (strcmp(KNOWN_SSID[n], WiFi.SSID(i).c_str())) {
-        Serial.print(F("\tNot matching "));
-        Serial.println(KNOWN_SSID[n]);
+        debug(F("\tNot matching "));
+        debugln(KNOWN_SSID[n]);
       } else { // we got a match
         wifiFound = true;
         break; // n is the network index we found

@@ -1,7 +1,13 @@
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
-    websocket.onopen = function(event) { console.log('Connected to WebSocket'); };
-    websocket.onclose = function(event) { console.log('Disconnected from WebSocket'); };
+    websocket.onopen = function(event) { 
+        console.log('Connected to WebSocket'); 
+        updateConnectionStatus(true);
+    };
+    websocket.onclose = function(event) { 
+        console.log('Disconnected from WebSocket'); 
+        updateConnectionStatus(false);
+    };
     websocket.onmessage = function(event) {
         try {
             handleWebSocketMessage(JSON.parse(event.data));
@@ -9,7 +15,10 @@ function initWebSocket() {
             console.error('Invalid JSON 1.22:', event.data);
         }
     };
-    websocket.onerror = function(event) { console.error('WebSocket error:', event); }; // Add error handling
+    websocket.onerror = function(event) { 
+        console.error('WebSocket error:', event); 
+        updateConnectionStatus(false);
+    }; // Add error handling
 }
  
 // takes select element and teamId as arguments
@@ -87,6 +96,20 @@ function handleWebSocketMessage(message) {
         const teamId = 'team' + message.team;
         const buttonId = 'pilotSwapButton' + message.team;
         pilotSwap(teamId, buttonId);
+    }
+}
+
+function updateConnectionStatus(isConnected) {
+    const statusIndicator = document.getElementById('connectionStatusIndicator');
+    const statusText = document.getElementById('connectionStatusText');
+    if (isConnected) {
+        statusIndicator.classList.remove('disconnected');
+        statusIndicator.classList.add('connected');
+        statusText.textContent = 'Connected';
+    } else {
+        statusIndicator.classList.remove('connected');
+        statusIndicator.classList.add('disconnected');
+        statusText.textContent = 'Disconnected';
     }
 }
 
