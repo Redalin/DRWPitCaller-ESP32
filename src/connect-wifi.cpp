@@ -6,6 +6,8 @@
 
 // The device hostname
 const char* hostname = "DRWCaller";
+const char* apName = "DRW.local";
+const char* apPass = "wellington";
 
 // Wifi network credentials
 const char* KNOWN_SSID[] = {"DRW", "ChrisnAimee.com"};
@@ -42,10 +44,12 @@ void initWifi()
   }
   else
   {
-    wifiMessage = "No known networks found";
+    wifiMessage = "No networks found";
     displayText(wifiMessage);
     Serial.println(wifiMessage);
-    while (true);
+    createWifi();
+    displayText("Created Wifi: " + String(apName));
+    // while (true);
     // We should not be here, no need to go further, hang in there, will auto launch the Soft WDT reset
   }
 }
@@ -110,9 +114,10 @@ String connectToWifi() {
 }
 
 String createWifi() {
-  IPAddress IP = WiFi.softAP("DRW.local", "wellington");
-  String apMessage = "Created Wifi " + IP.toString();
-  Serial.println(apMessage + WiFi.localIP().toString());
-  displayText(WiFi.localIP().toString());
+  WiFi.softAP(apName, apPass);
+  IPAddress IP = WiFi.softAPIP();
+  String apMessage = "Created Wifi " + String(apName) + " with IP: " + IP.toString();
+  Serial.println(apMessage);
+  displayText(apMessage);
   return "DRW.local";
 }

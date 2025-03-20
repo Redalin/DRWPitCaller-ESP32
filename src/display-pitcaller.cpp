@@ -37,7 +37,11 @@ void displayText(String message) {
   display.print("HTTP://");
   display.println(WiFi.getHostname());
   display.print("IP: ");
-  display.println(WiFi.localIP());
+  IPAddress localIP = WiFi.localIP();
+  if (localIP.toString() == "0.0.0.0") {
+    localIP = WiFi.softAPIP();
+  }
+  display.println(localIP);
   display.println(message);
   display.display();
 }
