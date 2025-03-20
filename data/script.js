@@ -1,3 +1,7 @@
+const timeout = 5000; // 5 seconds
+const keepAliveInterval = 10000; // 10 seconds
+const countdown = 20; // 20 seconds   
+ 
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
     websocket.onopen = function(event) { 
@@ -7,6 +11,7 @@ function initWebSocket() {
     websocket.onclose = function(event) { 
         console.log('Disconnected from WebSocket'); 
         updateConnectionStatus(false);
+        setTimeout(initWebSocket, timeout); // Attempt to reconnect after 5 seconds
     };
     websocket.onmessage = function(event) {
         try {
@@ -19,6 +24,13 @@ function initWebSocket() {
         console.error('WebSocket error:', event); 
         updateConnectionStatus(false);
     }; // Add error handling
+}
+
+function keepAlive() {
+    if (!websocket || websocket.readyState === WebSocket.CLOSED) {
+        console.log('WebSocket is closed, attempting to reconnect...');
+        initWebSocket();
+    }
 }
  
 // takes select element and teamId as arguments
@@ -116,4 +128,5 @@ function updateConnectionStatus(isConnected) {
 window.onload = function(event) {
     console.log('onload');
     initWebSocket();
+    setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
 }
