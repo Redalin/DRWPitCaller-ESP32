@@ -79,6 +79,19 @@ function pilotSwapStart (teamId, buttonId) {
     websocket.send(JSON.stringify({ type: 'pilotSwap', teamId: teamID, buttonId: buttonId })); // Tell the websocket which lane to start
 }
 
+// hack to force IOS devices to play audio on an event
+let hasEnabledVoice = false;
+
+document.addEventListener('click', () => {
+  if (hasEnabledVoice) {
+    return;
+  }
+  const lecture = new SpeechSynthesisUtterance('hello');
+  lecture.volume = 0;
+  speechSynthesis.speak(lecture);
+  hasEnabledVoice = true;
+});
+
 function voiceAnnounce(text) {
     const announcement = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(announcement);
