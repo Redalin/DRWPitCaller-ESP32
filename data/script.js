@@ -64,18 +64,19 @@ function updateTeamBox(teamName, teamId, countdown, buttonId) {
 
 // takes teamId, buttonId and countdown as arguments for a single lane update.
 // sends a websocket with json data to notify other clients.
-function pilotSwap(teamId, buttonId) {
-    console.log('pilotSwap: ', teamId, " -> ", buttonId);
+// function pilotSwap(teamId, buttonId) {
+function pilotSwap(teamId) {
     const teamBox = document.getElementById(teamId);
-    // const teamID = teamId.substring(4);
     const teamName = teamBox.querySelector('.team-name').textContent;
-    // const button = document.getElementById(buttonId);
-    // console.log('pilotSwap: ', teamID, " -> ", teamBox.id, teamName, button.id);
+    console.log('pilotSwap: ', teamId, " -> ", teamName);
 
     const announcement = (`Pilot swap announced: ${teamName}`);
     voiceAnnounce(announcement);
+}
 
-    // websocket.send(JSON.stringify({ type: 'pilotSwap', teamId: teamID, buttonId: button.id })); // Ensure correct data format
+function pilotSwapStart (teamId, buttonId) {
+    const teamID = teamId.substring(4); // get the team number off the end of the teamId
+    websocket.send(JSON.stringify({ type: 'pilotSwap', teamId: teamID, buttonId: buttonId })); // Tell the websocket which lane to start
 }
 
 function voiceAnnounce(text) {
@@ -100,14 +101,12 @@ function handleWebSocketMessage(message) {
     if (message.type === 'update') {
         // console.log('handle JS Websocket update: ', message);
         updateTeamsUI(message.data);
-    }  
-    
-    // This code removed as not needed, but kept for reference in case we need to enable voice synthesis for the pit button 
-    else if (message.type === 'pilotSwap') {
-       console.log('handle JS Websocket pilotSwap: ', message);
+    }  else if (message.type === 'pilotSwap') {
+       // console.log('handle JS Websocket pilotSwap: ', message);
         const teamId = 'team' + message.team;
-        const buttonId = 'pilotSwapButton' + message.team;
-        pilotSwap(teamId, buttonId);
+        // const buttonId = 'pilotSwapButton' + message.team;
+        // pilotSwap(teamId, buttonId);
+        pilotSwap(teamId);
     }
 }
 
