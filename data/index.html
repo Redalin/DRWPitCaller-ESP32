@@ -1,68 +1,89 @@
-<!DOCTYPE HTML>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Lane Pit Control</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HQProp Drone GP 2025</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
-
 <body>
-  <div class="topnav">
-    <label class="hamburger-menu">
-      <input type="checkbox">
-    </label>
-    <aside class="sidebar">
-      <nav>
-        <a href="classic/index.html">Classic</a>
-        <a href="soundboard/index.html">Soundboard</a>
-      </nav>
-    </aside>
-    <div class="header">
-      DRW Pit Caller
+    <div class="team-section">
+        <div class="box" id="team1">
+            <p class="team-name">Team 1</p>
+        </div>
+        <div class="box" id="team2">
+            <p class="team-name">Team 2</p>
+        </div>
+        <div class="box" id="team3">
+            <p class="team-name">Team 3</p>
+        </div>
+        <div class="box" id="team4">
+            <p class="team-name">Team 4</p>
+        </div>
     </div>
-  </div>
-  <div id="lanes">
-    <div class="card" id="lane1">
-      <h2>Lane 1</h2>
-      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(0, this.value)">
-      <button class="button" onclick="startPit(0)">Pit</button>
-    </div>
-    <div class="card" id="lane2">
-      <h2>Lane 2</h2>
-      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(1, this.value)">
-      <button class="button" onclick="startPit(1)">Pit</button>
-    </div>
-    <div class="card" id="lane3">
-      <h2>Lane 3</h2>
-      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(2, this.value)">
-      <button class="button" onclick="startPit(2)">Pit</button>
-    </div>
-    <div class="card" id="lane4">
-      <h2>Lane 4</h2>
-      <input type="text" class="pilotName" placeholder="Pilot Name" oninput="updateLaneName(3, this.value)">
-      <button class="button" onclick="startPit(3)">Pit</button>
-    </div>
-    <div class="card">
-      <h2>Pit Stats</h2>
-      <table>
-        <tr>
-          <td>
-            <div class="stats" id="stats1">Lane 1: 0</div>
-            <div class="stats" id="stats2">Lane 2: 0</div>
-            <div class="stats" id="stats3">Lane 3: 0</div>
-            <div class="stats" id="stats4">Lane 4: 0</div>
-          </td>
-          <td>
-            <button class="button StatsButton" onclick="resetStats()">Reset</button>
-          </td>
-        </tr>
-      </table>      
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
 
+    <div class="admin-section">
+        <h2>Admin Section</h2>
+        <br>
+        <div class="box">
+            <h3>Team 1</h3>
+            <select class="dropdown" onchange="updateTeamName(this, 'team1')">
+                <option value="">-- Select --</option>
+                <option value="Flow State">Flow State</option>
+                <option value="Redtail">Redtail</option>
+                <option value="The Cooks">The Cooks</option>
+                <option value="Team IDK">Team IDK</option>
+                <option value="Divergents">Divergents</option>
+                <option value="Mid Air Farce">Mid Air Farce</option>
+            </select>
+            <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>
+        </div>
+        <div class="box">
+            <h3>Team 2</h3>
+            <select class="dropdown" onchange="updateTeamName(this, 'team2')">
+                <option value="">-- Select --</option>
+                <option value="Flow State">Flow State</option>
+                <option value="Redtail">Redtail</option>
+                <option value="The Cooks">The Cooks</option>
+                <option value="Team IDK">Team IDK</option>
+                <option value="Divergents">Divergents</option>
+                <option value="Mid Air Farce">Mid Air Farce</option>
+            </select>
+            <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
+        </div>
+        <div class="box">
+            <h3>Team 3</h3>
+            <select class="dropdown" onchange="updateTeamName(this, 'team3')">
+                <option value="">-- Select --</option>
+                <option value="Flow State">Flow State</option>
+                <option value="Redtail">Redtail</option>
+                <option value="The Cooks">The Cooks</option>
+                <option value="Team IDK">Team IDK</option>
+                <option value="Divergents">Divergents</option>
+                <option value="Mid Air Farce">Mid Air Farce</option>
+            </select>
+            <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
+        </div>
+        <div class="box">
+            <h3>Team 4</h3>
+            <select class="dropdown" onchange="updateTeamName(this, 'team4')">
+                <option value="">-- Select --</option>
+                <option value="Flow State">Flow State</option>
+                <option value="Redtail">Redtail</option>
+                <option value="The Cooks">The Cooks</option>
+                <option value="Team IDK">Team IDK</option>
+                <option value="Divergents">Divergents</option>
+                <option value="Mid Air Farce">Mid Air Farce</option>
+            </select>
+            <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
+        </div>
+    </div>
+    <div class=version>Version 1.1.03</div>
+    <div class="connection-status">
+        <div class="status-indicator disconnected" id="connectionStatusIndicator"></div>
+        <span id="connectionStatusText">Disconnected</span>
+    </div>
+    <script src="script.js"></script>
+</body>
 </html>

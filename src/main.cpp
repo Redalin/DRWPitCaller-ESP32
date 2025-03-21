@@ -1,9 +1,8 @@
-// #include "config.h"
+#include "config.h"
+#include "connect-wifi.h" // Wi-Fi credentials
 #include <arduino.h>
-#include <ESPmDNS.h>
-#include <LittleFS.h>
-#include "connect-wifi.h"
 #include "pitweb.h"
+#include "display-pitcaller.h"
 
 // The include for the Display is now in pitWeb.h directly
 // This is so we can send the button press messages to the OLED display
@@ -15,57 +14,19 @@ void setup() {
   // Setup the OLED Display
   displaysetup();
 
-  if (!LittleFS.begin()) {
-    Serial.println("An error has occurred while mounting LittleFS");
-    return;
-  }
-  Serial.println("LittleFS mounted successfully");
+  // initialise the LittleFS
+  initLittleFS();
 
-  // Scan for known wifi Networks
-  WiFi.setHostname(hostname);
-  scanForWifi();
-  if(visibleNetworks > 0) {
-    displayText("Connecting to WiFi");
-    String wifiName = connectToWifi();
-    String wifiMessage = "Connected to: " + wifiName;
-    displayText(wifiMessage);
-  } else {
-    Serial.println(F("no networks found. Reset to try again"));
-    while (true); // no need to go further, hang in there, will auto launch the Soft WDT reset
-  }
-  
-  // Initialize mDNS
-  if (!MDNS.begin(hostname)) {   // Set the hostname
-    Serial.println("Error setting up MDNS responder!");
-    while(1) {
-      delay(1000);
-    }
-  }
-  Serial.println("mDNS responder started");
+  // initialise Wifi as per the connect-wifi file
+  initWifi();
+  initMDNS();
 
-  ws.onEvent(onEvent);
-  server.addHandler(&ws);
-
-  Serial.println("Starting Web Server");
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(LittleFS, "/index.html", "text/html");
-  });
-  server.on("/favicon.png", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(LittleFS, "/favicon.png", "image/png");
-  });
-
-  server.serveStatic("/", LittleFS, "/");
-  server.begin();
-
-  for (int i = 0; i < NUM_LANES; i++) {
-    buttonStates[i].countdown = 0;
-    pinMode(lanePins[i], INPUT_PULLUP); // Assuming switch closes to ground
-  }
-
+  // initialise the websocket and web server
+  initwebservers();
 }
 
 void loop() {
-  ws.cleanupClients();
+  cleanupWebClients();
   // checkLaneSwitches();
 
   unsigned long currentTime = millis();
