@@ -13,12 +13,15 @@ struct ButtonState {
   int countdown;
 };
 
+
 #define NUM_LANES 4
 extern const uint8_t lanePins[NUM_LANES];
 extern unsigned long lastCheckTime;
 extern unsigned long countdownTimers[NUM_LANES];
 extern int countdownTimer;
 extern ButtonState buttonStates[NUM_LANES];
+extern String customAnnounceMessageBefore;
+extern String customAnnounceMessageAfter;
 
 void initwebservers();
 void initLittleFS();

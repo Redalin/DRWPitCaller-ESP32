@@ -1,12 +1,12 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
-const countdown = 20; // 20 seconds   
 
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
     websocket.onopen = function(event) { 
         console.log('Connected to WebSocket'); 
         updateConnectionStatus(true);
+        loadCustomAnnouncements(); // Call the function to load announcements
     };
     websocket.onclose = function(event) { 
         console.log('Disconnected from WebSocket'); 
@@ -70,7 +70,7 @@ function pilotSwap(teamId) {
     const teamName = teamBox.querySelector('.team-name').textContent;
     console.log('pilotSwap: ', teamId, " -> ", teamName);
 
-    const customMessageInputBefore = document.getElementById('customMessageBefore') || "Pilot Swap announced ";
+    const customMessageInputBefore = document.getElementById('customMessageBefore');
     const customMessageInputAfter = document.getElementById('customMessageAfter');
     const announcement = customMessageInputBefore.value + teamName + customMessageInputAfter.value;
     voiceAnnounce(announcement);
@@ -120,6 +120,10 @@ function handleWebSocketMessage(message) {
        // console.log('handle JS Websocket pilotSwap: ', message);
         const teamId = 'team' + message.team;
         pilotSwap(teamId);
+    } else if (message.type === 'updateCustomMessages') {
+        // Update custom messages
+        document.getElementById('customMessageBefore').value = message.customMessageBefore;
+        document.getElementById('customMessageAfter').value = message.customMessageAfter;
     }
 }
 
@@ -176,6 +180,18 @@ function saveTeamNames() {
     loadTeamNames();
 }
 
+function saveCustomMessages() {
+    const customMessageInputBefore = document.getElementById('customMessageBefore');
+    const customMessageInputAfter = document.getElementById('customMessageAfter');
+
+    // Send custom messages to WebSocket
+    websocket.send(JSON.stringify({
+        type: 'updateCustomMessages',
+        customMessageBefore: customMessageInputBefore.value,
+        customMessageAfter: customMessageInputAfter.value
+    }));
+}
+
 function drag(event) {
     try {
         event.dataTransfer.setData("text/plain", event.target.closest("tr").rowIndex);
@@ -201,6 +217,14 @@ function drop(event) {
     } catch (error) {
         console.error('Drop error:', error);
     }
+}
+
+function loadCustomAnnouncements() {
+    const customMessageInputBefore = document.getElementById('customMessageBefore');
+    const customMessageInputAfter = document.getElementById('customMessageAfter');
+
+    // Send request to WebSocket to get custom messages
+    websocket.send(JSON.stringify({ type: 'getCustomMessages' }));
 }
 
 document.getElementById("teamNamesTable").addEventListener("dragover", allowDrop);
