@@ -225,9 +225,6 @@ function drop(event) {
 }
 
 function loadCustomAnnouncements() {
-    const customMessageInputBefore = document.getElementById('customMessageBefore');
-    const customMessageInputAfter = document.getElementById('customMessageAfter');
-
     // Send request to WebSocket to get custom messages
     websocket.send(JSON.stringify({ type: 'getCustomMessages' }));
 }
