@@ -142,7 +142,8 @@ function updateConnectionStatus(isConnected) {
 }
 
 function loadTeamNames() {
-    const teamNames = Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
+    const savedTeamNames = JSON.parse(localStorage.getItem('teamNames')) || [];
+    const teamNames = savedTeamNames.length > 0 ? savedTeamNames : Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
     const dropdowns = ['team1Dropdown', 'team2Dropdown', 'team3Dropdown', 'team4Dropdown'];
     dropdowns.forEach(dropdownId => {
         const dropdown = document.getElementById(dropdownId);
@@ -154,6 +155,12 @@ function loadTeamNames() {
             dropdown.appendChild(option);
         });
     });
+}
+
+function saveTeamNames() {
+    const teamNames = Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
+    localStorage.setItem('teamNames', JSON.stringify(teamNames));
+    loadTeamNames();
 }
 
 function addTeamName() {
@@ -169,15 +176,13 @@ function addTeamName() {
     newCell2.contentEditable = "true";
     newCell2.textContent = "New Team";
     newCell3.innerHTML = '<button onclick="removeTeamName(this)">Remove</button>';
+    saveTeamNames(); // Save team names after adding a new team
 }
 
 function removeTeamName(button) {
     const row = button.parentNode.parentNode;
     row.parentNode.removeChild(row);
-}
-
-function saveTeamNames() {
-    loadTeamNames();
+    saveTeamNames(); // Save team names after removing a team
 }
 
 function saveCustomMessages() {

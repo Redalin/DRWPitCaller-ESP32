@@ -27,7 +27,6 @@ void initwebservers();
 void initLittleFS();
 void cleanupWebClients();
 void notifyClients();
-void announcePitting(int lane, bool isPitting);
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len);
 
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len);
