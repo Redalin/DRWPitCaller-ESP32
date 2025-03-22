@@ -1,7 +1,7 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
 const countdown = 20; // 20 seconds   
- 
+
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
     websocket.onopen = function(event) { 
@@ -32,7 +32,7 @@ function keepAlive() {
         initWebSocket();
     }
 }
- 
+
 // takes select element and teamId as arguments
 // sends a websocket with json data to update the team name.
 function updateTeamName(selectElement, teamId) {
@@ -70,7 +70,9 @@ function pilotSwap(teamId) {
     const teamName = teamBox.querySelector('.team-name').textContent;
     console.log('pilotSwap: ', teamId, " -> ", teamName);
 
-    const announcement = (`Pilot swap announced: ${teamName}`);
+    const customMessageInputBefore = document.getElementById('customMessageBefore') || "Pilot Swap announced ";
+    const customMessageInputAfter = document.getElementById('customMessageAfter');
+    const announcement = customMessageInputBefore.value + teamName + customMessageInputAfter.value;
     voiceAnnounce(announcement);
 }
 
@@ -117,8 +119,6 @@ function handleWebSocketMessage(message) {
     }  else if (message.type === 'pilotSwap') {
        // console.log('handle JS Websocket pilotSwap: ', message);
         const teamId = 'team' + message.team;
-        // const buttonId = 'pilotSwapButton' + message.team;
-        // pilotSwap(teamId, buttonId);
         pilotSwap(teamId);
     }
 }
@@ -137,8 +137,78 @@ function updateConnectionStatus(isConnected) {
     }
 }
 
+function loadTeamNames() {
+    const teamNames = Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
+    const dropdowns = ['team1Dropdown', 'team2Dropdown', 'team3Dropdown', 'team4Dropdown'];
+    dropdowns.forEach(dropdownId => {
+        const dropdown = document.getElementById(dropdownId);
+        dropdown.innerHTML = '<option value="">-- Select --</option>';
+        teamNames.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            dropdown.appendChild(option);
+        });
+    });
+}
+
+function addTeamName() {
+    const table = document.getElementById('teamNamesTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    newRow.draggable = true;
+    newRow.ondragstart = drag;
+    const newCell1 = newRow.insertCell(0);
+    const newCell2 = newRow.insertCell(1);
+    const newCell3 = newRow.insertCell(2);
+    newCell1.className = "drag-handle";
+    newCell1.textContent = "☰";
+    newCell2.contentEditable = "true";
+    newCell2.textContent = "New Team";
+    newCell3.innerHTML = '<button onclick="removeTeamName(this)">Remove</button>';
+}
+
+function removeTeamName(button) {
+    const row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+}
+
+function saveTeamNames() {
+    loadTeamNames();
+}
+
+function drag(event) {
+    try {
+        event.dataTransfer.setData("text/plain", event.target.closest("tr").rowIndex);
+    } catch (error) {
+        console.error('Drag error:', error);
+    }
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+    try {
+        const draggedRowIndex = event.dataTransfer.getData("text/plain");
+        const targetRow = event.target.closest("tr");
+        if (draggedRowIndex && targetRow) {
+            const table = document.getElementById("teamNamesTable").getElementsByTagName("tbody")[0];
+            const draggedRow = table.rows[draggedRowIndex - 1];
+            table.insertBefore(draggedRow, targetRow.nextSibling);
+        }
+    } catch (error) {
+        console.error('Drop error:', error);
+    }
+}
+
+document.getElementById("teamNamesTable").addEventListener("dragover", allowDrop);
+document.getElementById("teamNamesTable").addEventListener("drop", drop);
+
 window.onload = function(event) {
     console.log('onload');
     initWebSocket();
     setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
+    loadTeamNames(); // Call the function to load team names
 }

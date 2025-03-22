@@ -28,58 +28,83 @@
         <br>
         <div class="box">
             <h3>Team 1</h3>
-            <select class="dropdown" onchange="updateTeamName(this, 'team1')">
-                <option value="">-- Select --</option>
-                <option value="Flow State">Flow State</option>
-                <option value="Redtail">Redtail</option>
-                <option value="The Cooks">The Cooks</option>
-                <option value="Team IDK">Team IDK</option>
-                <option value="Divergents">Divergents</option>
-                <option value="Mid Air Farce">Mid Air Farce</option>
-            </select>
-            <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>
+            <div class="inline-elements">
+                <select class="dropdown" id="team1Dropdown" onchange="updateTeamName(this, 'team1')"></select>
+                <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>
+            </div>
         </div>
         <div class="box">
             <h3>Team 2</h3>
-            <select class="dropdown" onchange="updateTeamName(this, 'team2')">
-                <option value="">-- Select --</option>
-                <option value="Flow State">Flow State</option>
-                <option value="Redtail">Redtail</option>
-                <option value="The Cooks">The Cooks</option>
-                <option value="Team IDK">Team IDK</option>
-                <option value="Divergents">Divergents</option>
-                <option value="Mid Air Farce">Mid Air Farce</option>
-            </select>
-            <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
+            <div class="inline-elements">
+                <select class="dropdown" id="team2Dropdown" onchange="updateTeamName(this, 'team2')"></select>
+                <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
+            </div>
         </div>
         <div class="box">
             <h3>Team 3</h3>
-            <select class="dropdown" onchange="updateTeamName(this, 'team3')">
-                <option value="">-- Select --</option>
-                <option value="Flow State">Flow State</option>
-                <option value="Redtail">Redtail</option>
-                <option value="The Cooks">The Cooks</option>
-                <option value="Team IDK">Team IDK</option>
-                <option value="Divergents">Divergents</option>
-                <option value="Mid Air Farce">Mid Air Farce</option>
-            </select>
-            <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
+            <div class="inline-elements">
+                <select class="dropdown" id="team3Dropdown" onchange="updateTeamName(this, 'team3')"></select>
+                <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
+            </div>
         </div>
         <div class="box">
             <h3>Team 4</h3>
-            <select class="dropdown" onchange="updateTeamName(this, 'team4')">
-                <option value="">-- Select --</option>
-                <option value="Flow State">Flow State</option>
-                <option value="Redtail">Redtail</option>
-                <option value="The Cooks">The Cooks</option>
-                <option value="Team IDK">Team IDK</option>
-                <option value="Divergents">Divergents</option>
-                <option value="Mid Air Farce">Mid Air Farce</option>
-            </select>
-            <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
+            <div class="inline-elements">
+                <select class="dropdown" id="team4Dropdown" onchange="updateTeamName(this, 'team4')"></select>
+                <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
+            </div>
         </div>
     </div>
-    <div class=version>Version 1.1.03</div>
+
+    <!-- Add input field for custom announcement message -->
+    <div class="custom-message">
+        <p>Enter the announcement message:</p>
+        <p>Before message: <input id="customMessageBefore" placeholder="" /></p>
+        <p>Team Name</p>
+        <p>After message: <input id="customMessageAfter" placeholder="" /></p>
+    </div>
+
+    <div class="team-names-list">
+        <h3>Team Names</h3>
+        <table id="teamNamesTable">
+            <tbody>
+                <tr draggable="true" ondragstart="drag(event)">
+                    <td class="drag-handle">☰</td>
+                    <td contenteditable="true">Flow State</td>
+                    <td><button onclick="removeTeamName(this)">Remove</button></td>
+                </tr>
+                <tr draggable="true" ondragstart="drag(event)">
+                    <td class="drag-handle">☰</td>
+                    <td contenteditable="true">Redtail</td>
+                    <td><button onclick="removeTeamName(this)">Remove</button></td>
+                </tr>
+                <tr draggable="true" ondragstart="drag(event)">
+                    <td class="drag-handle">☰</td>
+                    <td contenteditable="true">The Cooks</td>
+                    <td><button onclick="removeTeamName(this)">Remove</button></td>
+                </tr>
+                <tr draggable="true" ondragstart="drag(event)">
+                    <td class="drag-handle">☰</td>
+                    <td contenteditable="true">Team IDK</td>
+                    <td><button onclick="removeTeamName(this)">Remove</button></td>
+                </tr>
+                <tr draggable="true" ondragstart="drag(event)">
+                    <td class="drag-handle">☰</td>
+                    <td contenteditable="true">Divergents</td>
+                    <td><button onclick="removeTeamName(this)">Remove</button></td>
+                </tr>
+                <tr draggable="true" ondragstart="drag(event)">
+                    <td class="drag-handle">☰</td>
+                    <td contenteditable="true">Mid Air Farce</td>
+                    <td><button onclick="removeTeamName(this)">Remove</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button onclick="addTeamName()">Add Team</button>
+        <button onclick="saveTeamNames()">Save</button>
+    </div>
+
+    <div class=version>Version 1.2.01</div>
     <div class="connection-status">
         <div class="status-indicator disconnected" id="connectionStatusIndicator"></div>
         <span id="connectionStatusText">Disconnected</span>
