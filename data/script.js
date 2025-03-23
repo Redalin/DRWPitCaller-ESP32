@@ -99,6 +99,23 @@ function voiceAnnounce(text) {
     window.speechSynthesis.speak(announcement);
 }
 
+function saveCustomAnnouncements() {
+    const customMessageInputBefore = document.getElementById('customMessageBefore');
+    const customMessageInputAfter = document.getElementById('customMessageAfter');
+
+    // Send custom messages to WebSocket
+    websocket.send(JSON.stringify({
+        type: 'updateCustomMessages',
+        customMessageBefore: customMessageInputBefore.value,
+        customMessageAfter: customMessageInputAfter.value
+    }));
+}
+
+function loadCustomAnnouncements() {
+    // Send request to WebSocket to get custom messages
+    websocket.send(JSON.stringify({ type: 'getCustomMessages' }));
+}
+
 function updateTeamsUI(UIdata) {
     // console.log('updateTeamsUI: ', UIdata);
     for (var i = 0; i < UIdata.length; i++) {
@@ -185,18 +202,6 @@ function removeTeamName(button) {
     saveTeamNames(); // Save team names after removing a team
 }
 
-function saveCustomMessages() {
-    const customMessageInputBefore = document.getElementById('customMessageBefore');
-    const customMessageInputAfter = document.getElementById('customMessageAfter');
-
-    // Send custom messages to WebSocket
-    websocket.send(JSON.stringify({
-        type: 'updateCustomMessages',
-        customMessageBefore: customMessageInputBefore.value,
-        customMessageAfter: customMessageInputAfter.value
-    }));
-}
-
 function drag(event) {
     try {
         event.dataTransfer.setData("text/plain", event.target.closest("tr").rowIndex);
@@ -222,11 +227,6 @@ function drop(event) {
     } catch (error) {
         console.error('Drop error:', error);
     }
-}
-
-function loadCustomAnnouncements() {
-    // Send request to WebSocket to get custom messages
-    websocket.send(JSON.stringify({ type: 'getCustomMessages' }));
 }
 
 document.getElementById("teamNamesTable").addEventListener("dragover", allowDrop);
