@@ -22,6 +22,7 @@ extern int countdownTimer;
 extern ButtonState buttonStates[NUM_LANES];
 extern String customAnnounceMessageBefore;
 extern String customAnnounceMessageAfter;
+extern int numSavedTeams;
 
 void initwebservers();
 void initLittleFS();

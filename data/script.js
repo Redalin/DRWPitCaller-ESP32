@@ -198,13 +198,13 @@ function addTeamName() {
     newCell2.contentEditable = "true";
     newCell2.textContent = "New Team";
     newCell3.innerHTML = '<button onclick="removeTeamName(this)">Remove</button>';
-    saveTeamNames(); // Save team names after adding a new team
+    // saveTeamNames(); // Only save team names when you press the save button, not after adding a new team
 }
 
 function removeTeamName(button) {
     const row = button.parentNode.parentNode;
     row.parentNode.removeChild(row);
-    saveTeamNames(); // Save team names after removing a team
+    // saveTeamNames(); // Only save team names when you press the save button, not after removing a team
 }
 
 function drag(event) {

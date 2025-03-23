@@ -11,6 +11,7 @@ const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
 int countdownTimer = 20;
+int numSavedTeams = 6;
 
 // struct ButtonState {
 //   String TeamName;
@@ -152,31 +153,29 @@ void saveTeamNamesInPreferences(String message) {
     Serial.println(error.f_str());
     return;
   }
-
-  void getTeamNamesFromPreferences();{
-    int totalTeamNames = 6;
-    teamNamepreferences.begin("teamNames", false); // Open preferences with namespace "teamNames"
-    String teamNames = "{\"type\":\"teamNames\",\"teamNames\":[";
-    for (int i = 0; i < totalTeamNames; i++) {
-      String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
-      String teamName = teamNamepreferences.getString(teamId.c_str(), "Lane " + String(i + 1));
-      teamNames += "\"" + teamName + "\"";
-      if (i < totalTeamNames - 1) teamNames += ",";
-    }
-    teamNames += "]}";
-    teamNamepreferences.end(); // Close preferences
-    ws.textAll(teamNames);
-  }
-
   JsonArray teamNames = doc["teamNames"];
-  for (int i = 0; i < teamNames.size(); i++) {
-    String teamName = teamNames[i];
+  numSavedTeams = teamNames.size();
+  for (int i = 0; i < numSavedTeams; i++) {
     String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
+    String teamName = teamNames[i];
     teamNamepreferences.putString(teamId.c_str(), teamName);
-    debugln("Saved " + teamId + " with name: " + teamName);
   }
-
   teamNamepreferences.end(); // Close preferences
+}
+
+void getTeamNamesFromPreferences() {
+  teamNamepreferences.begin("teamNames", true); // Open preferences with namespace "teamNames" in readOnly mode
+  String teamNames = "{\"type\":\"teamNames\",\"teamNames\":[";
+  for (int i = 0; i < numSavedTeams; i++) {
+    String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
+    String teamName = teamNamepreferences.getString(teamId.c_str(), "");
+    teamNames += "\"" + teamName + "\"";
+    if (i < numSavedTeams - 1)
+      teamNames += ",";
+  }
+  teamNames += "]}";
+  teamNamepreferences.end(); // Close preferences
+  ws.textAll(teamNames);
 }
 
 void checkLaneSwitches() {
