@@ -17,7 +17,7 @@ function initWebSocket() {
         try {
             handleWebSocketMessage(JSON.parse(event.data));
         } catch (e) {
-            console.error('Invalid JSON 1.22:', event.data);
+            console.error('Invalid JSON 1.2.03:', event.data);
         }
     };
     websocket.onerror = function(event) { 
