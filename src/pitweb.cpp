@@ -23,6 +23,8 @@ ButtonState buttonStates[NUM_LANES] = {
   {"Lane 4", 0}
 };
 
+String customAnnounceMessageBefore = "";
+String customAnnounceMessageAfter = "";
 
 AsyncWebSocket ws("/ws");
 AsyncWebServer server(80);
@@ -111,6 +113,19 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
       buttonStates[lane].teamName = teamName;
       notifyClients(); // Ensure clients are notified after update
+    } else if (type == "updateCustomMessages") {
+      // Receive and update custom messages
+      String customMessageBefore = doc["customMessageBefore"];
+      String customMessageAfter = doc["customMessageAfter"]; 
+      String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customMessageBefore + "\",\"customMessageAfter\":\"" + customMessageAfter + "\"}";
+      
+      customAnnounceMessageAfter = customMessageAfter;
+      customAnnounceMessageBefore = customMessageBefore;
+      ws.textAll(broadcastMessage);
+    } else if (type == "getCustomMessages") {
+      // Send the custom messages to the client
+      String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
+      ws.textAll(broadcastMessage);
     } else {
       debugln("Unknown message type: " + type);
     }
