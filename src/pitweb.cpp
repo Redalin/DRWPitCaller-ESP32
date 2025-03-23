@@ -131,6 +131,9 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     } else if (type == "updateTeamNames") {
       debugln("Received updateTeamNames message: " + message);
       saveTeamNamesInPreferences(message);
+    } else if (type == "getTeamNames") {
+      debugln("Received getTeamNames message: " + message);
+      getTeamNamesFromPreferences();
     } else {
       debugln("Unknown message type: " + type);
     }
@@ -150,6 +153,21 @@ void saveTeamNamesInPreferences(String message) {
     return;
   }
 
+  void getTeamNamesFromPreferences();{
+    int totalTeamNames = 6;
+    teamNamepreferences.begin("teamNames", false); // Open preferences with namespace "teamNames"
+    String teamNames = "{\"type\":\"teamNames\",\"teamNames\":[";
+    for (int i = 0; i < totalTeamNames; i++) {
+      String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
+      String teamName = teamNamepreferences.getString(teamId.c_str(), "Lane " + String(i + 1));
+      teamNames += "\"" + teamName + "\"";
+      if (i < totalTeamNames - 1) teamNames += ",";
+    }
+    teamNames += "]}";
+    teamNamepreferences.end(); // Close preferences
+    ws.textAll(teamNames);
+  }
+
   JsonArray teamNames = doc["teamNames"];
   for (int i = 0; i < teamNames.size(); i++) {
     String teamName = teamNames[i];
@@ -163,7 +181,7 @@ void saveTeamNamesInPreferences(String message) {
 
 void checkLaneSwitches() {
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    if (digitalRead(lanePins[lane]) == LOW) { // Assuming switch opens to high
+    if (digitalRead(lanePins[lane]) == LOW) { // Assuming switch opens to HIGH but use LOW for testing
       debugln("Lane " + String(lane+1) + " pressed");
       if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
         buttonStates[lane].countdown = countdownTimer;

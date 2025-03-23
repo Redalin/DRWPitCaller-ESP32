@@ -30,6 +30,7 @@ void notifyClients();
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len);
 void announcePilotSwap(int lane);
 void saveTeamNamesInPreferences(String message);
+void getTeamNamesFromPreferences();
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len);
 void checkLaneSwitches();
 
