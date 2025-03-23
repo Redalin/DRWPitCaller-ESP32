@@ -5,6 +5,7 @@
 #include "display-pitcaller.h"
 #include <ArduinoJson.h>
 #include "pitweb.h"
+#include <Preferences.h>
 
 const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
@@ -28,6 +29,7 @@ String customAnnounceMessageAfter = "";
 
 AsyncWebSocket ws("/ws");
 AsyncWebServer server(80);
+Preferences teamNamepreferences;
 
 void initLittleFS() {
   if (!LittleFS.begin()) {
@@ -126,6 +128,9 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       // Send the custom messages to the client
       String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
       ws.textAll(broadcastMessage);
+    } else if (type == "updateTeamNames") {
+      debugln("Received updateTeamNames message: " + message);
+      saveTeamNamesInPreferences(message);
     } else {
       debugln("Unknown message type: " + type);
     }
@@ -134,9 +139,31 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   }
 }
 
+// write the team names to the preferences API
+void saveTeamNamesInPreferences(String message) {
+  teamNamepreferences.begin("teamNames", false); // Open preferences with namespace "teamNames"
+  JsonDocument doc;
+  DeserializationError error = deserializeJson(doc, message);
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+
+  JsonArray teamNames = doc["teamNames"];
+  for (int i = 0; i < teamNames.size(); i++) {
+    String teamName = teamNames[i];
+    String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
+    teamNamepreferences.putString(teamId.c_str(), teamName);
+    debugln("Saved " + teamId + " with name: " + teamName);
+  }
+
+  teamNamepreferences.end(); // Close preferences
+}
+
 void checkLaneSwitches() {
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    if (digitalRead(lanePins[lane]) == HIGH) { // Assuming switch opens to high
+    if (digitalRead(lanePins[lane]) == LOW) { // Assuming switch opens to high
       debugln("Lane " + String(lane+1) + " pressed");
       if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
         buttonStates[lane].countdown = countdownTimer;

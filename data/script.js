@@ -62,9 +62,9 @@ function updateTeamBox(teamName, teamId, countdown, buttonId) {
 
 }
 
-// takes teamId, buttonId and countdown as arguments for a single lane update.
+// takes teamId as arguments for a single lane update.
 // sends a websocket with json data to notify other clients.
-// function pilotSwap(teamId, buttonId) {
+// function pilotSwap(teamId) {
 function pilotSwap(teamId) {
     const teamBox = document.getElementById(teamId);
     const teamName = teamBox.querySelector('.team-name').textContent;
@@ -160,6 +160,7 @@ function updateConnectionStatus(isConnected) {
 
 function loadTeamNames() {
     const savedTeamNames = JSON.parse(localStorage.getItem('teamNames')) || [];
+    console.log('Loading Saved Team Names:', savedTeamNames);
     const teamNames = savedTeamNames.length > 0 ? savedTeamNames : Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
     const dropdowns = ['team1Dropdown', 'team2Dropdown', 'team3Dropdown', 'team4Dropdown'];
     dropdowns.forEach(dropdownId => {
@@ -176,7 +177,11 @@ function loadTeamNames() {
 
 function saveTeamNames() {
     const teamNames = Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
+    console.log('Saving Team Names:', teamNames);   
     localStorage.setItem('teamNames', JSON.stringify(teamNames));
+
+    // Send the team names to the websocket to be saved
+    websocket.send(JSON.stringify({ type: 'updateTeamNames', teamNames: teamNames }));
     loadTeamNames();
 }
 
