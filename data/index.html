@@ -68,44 +68,16 @@
     <div class="team-names-list">
         <h3>Team Names</h3>
         <table id="teamNamesTable">
-            <tbody>
-                <tr draggable="true" ondragstart="drag(event)">
-                    <td class="drag-handle">☰</td>
-                    <td contenteditable="true">Flow State</td>
-                    <td><button onclick="removeTeamName(this)">Remove</button></td>
-                </tr>
-                <tr draggable="true" ondragstart="drag(event)">
-                    <td class="drag-handle">☰</td>
-                    <td contenteditable="true">Redtail</td>
-                    <td><button onclick="removeTeamName(this)">Remove</button></td>
-                </tr>
-                <tr draggable="true" ondragstart="drag(event)">
-                    <td class="drag-handle">☰</td>
-                    <td contenteditable="true">The Cooks</td>
-                    <td><button onclick="removeTeamName(this)">Remove</button></td>
-                </tr>
-                <tr draggable="true" ondragstart="drag(event)">
-                    <td class="drag-handle">☰</td>
-                    <td contenteditable="true">Team IDK</td>
-                    <td><button onclick="removeTeamName(this)">Remove</button></td>
-                </tr>
-                <tr draggable="true" ondragstart="drag(event)">
-                    <td class="drag-handle">☰</td>
-                    <td contenteditable="true">Divergents</td>
-                    <td><button onclick="removeTeamName(this)">Remove</button></td>
-                </tr>
-                <tr draggable="true" ondragstart="drag(event)">
-                    <td class="drag-handle">☰</td>
-                    <td contenteditable="true">Mid Air Farce</td>
-                    <td><button onclick="removeTeamName(this)">Remove</button></td>
-                </tr>
+            <tbody id="teamNamesTableBody">
+                <!-- Rows will be dynamically generated here -->
             </tbody>
         </table>
         <button onclick="addTeamName()">Add Team</button>
         <button onclick="saveTeamNames()">Save</button>
+        <button onclick="getTeamNames()">Reload</button>
     </div>
 
-    <div class=version>Version 1.2.01</div>
+    <div class=version>Version 1.2.03</div>
     <div class="connection-status">
         <div class="status-indicator disconnected" id="connectionStatusIndicator"></div>
         <span id="connectionStatusText">Disconnected</span>

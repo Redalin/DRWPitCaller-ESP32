@@ -1,11 +1,19 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
 
+// Initial page load constructors
+window.onload = function(event) {
+    console.log('onload');
+    initWebSocket();
+    setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
+}
+
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
     websocket.onopen = function(event) { 
         console.log('Connected to WebSocket'); 
         updateConnectionStatus(true);
+        getTeamNames(); // Call the function to get team names from the websocket
         loadCustomAnnouncements(); // Call the function to load announcements
     };
     websocket.onclose = function(event) { 
@@ -17,7 +25,7 @@ function initWebSocket() {
         try {
             handleWebSocketMessage(JSON.parse(event.data));
         } catch (e) {
-            console.error('Invalid JSON 1.22:', event.data);
+            console.error('Invalid JSON 1.3.0:', event.data);
         }
     };
     websocket.onerror = function(event) { 
@@ -32,6 +40,29 @@ function keepAlive() {
         initWebSocket();
     }
 }
+
+// Handle incoming WebSocket messages
+function handleWebSocketMessage(message) {
+    if (message.type === 'update') {
+        // console.log('handle JS Websocket update: ', message);
+        updateTeamsUI(message.data);
+    }  else if (message.type === 'pilotSwap') {
+       // console.log('handle JS Websocket pilotSwap: ', message);
+        const teamId = 'team' + message.team;
+        pilotSwap(teamId);
+    } else if (message.type === 'updateCustomMessages') {
+        // Update custom messages
+        document.getElementById('customMessageBefore').value = message.customMessageBefore;
+        document.getElementById('customMessageAfter').value = message.customMessageAfter;
+    } else if (message.type === 'updateTeamNames') {
+        // Load team names
+        //console.log('Loading team names from message:', message.teamNames); // Add debugging information
+        loadTeamNames(message.teamNames);
+    } else{
+        console.log('Unknown WebSocket message type:', message.type);
+    }
+}
+
 
 // takes select element and teamId as arguments
 // sends a websocket with json data to update the team name.
@@ -62,9 +93,9 @@ function updateTeamBox(teamName, teamId, countdown, buttonId) {
 
 }
 
-// takes teamId, buttonId and countdown as arguments for a single lane update.
+// takes teamId as arguments for a single lane update.
 // sends a websocket with json data to notify other clients.
-// function pilotSwap(teamId, buttonId) {
+// function pilotSwap(teamId) {
 function pilotSwap(teamId) {
     const teamBox = document.getElementById(teamId);
     const teamName = teamBox.querySelector('.team-name').textContent;
@@ -117,30 +148,13 @@ function loadCustomAnnouncements() {
 }
 
 function updateTeamsUI(UIdata) {
-    // console.log('updateTeamsUI: ', UIdata);
     for (var i = 0; i < UIdata.length; i++) {
         const teamName = UIdata[i].teamName;
         const countdown = UIdata[i].countdown;
         const teamId = 'team' + (i + 1);
         const buttonId = 'pilotSwapButton' + (i + 1);
 
-        //console.log('Calling updateTeamBox with: ', teamId,  teamName, countdown, buttonId);
         updateTeamBox(teamName, teamId, countdown, buttonId);
-    }
-}
-
-function handleWebSocketMessage(message) {
-    if (message.type === 'update') {
-        // console.log('handle JS Websocket update: ', message);
-        updateTeamsUI(message.data);
-    }  else if (message.type === 'pilotSwap') {
-       // console.log('handle JS Websocket pilotSwap: ', message);
-        const teamId = 'team' + message.team;
-        pilotSwap(teamId);
-    } else if (message.type === 'updateCustomMessages') {
-        // Update custom messages
-        document.getElementById('customMessageBefore').value = message.customMessageBefore;
-        document.getElementById('customMessageAfter').value = message.customMessageAfter;
     }
 }
 
@@ -158,8 +172,45 @@ function updateConnectionStatus(isConnected) {
     }
 }
 
-function loadTeamNames() {
-    const savedTeamNames = JSON.parse(localStorage.getItem('teamNames')) || [];
+// Team names table and functions
+function buildTeamNamesTable(teamNames) {
+    const tableBody = document.getElementById('teamNamesTableBody');
+    tableBody.innerHTML = ''; // Clear existing rows
+
+    teamNames.forEach(name => {
+        const row = document.createElement('tr');
+        row.setAttribute('draggable', 'true');
+        row.setAttribute('ondragstart', 'drag(event)');
+
+        const dragHandleCell = document.createElement('td');
+        dragHandleCell.className = 'drag-handle';
+        dragHandleCell.textContent = '☰';
+
+        const nameCell = document.createElement('td');
+        nameCell.setAttribute('contenteditable', 'true');
+        nameCell.textContent = name;
+
+        const removeButtonCell = document.createElement('td');
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.setAttribute('onclick', 'removeTeamName(this)');
+        removeButtonCell.appendChild(removeButton);
+
+        row.appendChild(dragHandleCell);
+        row.appendChild(nameCell);
+        row.appendChild(removeButtonCell);
+
+        tableBody.appendChild(row);
+    });
+}
+
+function getTeamNames() {
+    websocket.send(JSON.stringify({ type: 'getTeamNames' }));
+}
+
+function loadTeamNames(TeamNamesList) {
+    const savedTeamNames = Array.isArray(TeamNamesList) ? TeamNamesList : JSON.parse(TeamNamesList) || [];
+    // console.log('Loading Saved Team Names:', savedTeamNames);
     const teamNames = savedTeamNames.length > 0 ? savedTeamNames : Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
     const dropdowns = ['team1Dropdown', 'team2Dropdown', 'team3Dropdown', 'team4Dropdown'];
     dropdowns.forEach(dropdownId => {
@@ -172,12 +223,16 @@ function loadTeamNames() {
             dropdown.appendChild(option);
         });
     });
+    buildTeamNamesTable(teamNames);
+    console.log('Team Names Loaded:', teamNames);
 }
 
 function saveTeamNames() {
     const teamNames = Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
-    localStorage.setItem('teamNames', JSON.stringify(teamNames));
-    loadTeamNames();
+    
+    // Send the team names to the websocket to be saved
+    websocket.send(JSON.stringify({ type: 'updateTeamNames', teamNames: teamNames }));
+    getTeamNames(); // Reload the team names after saving
 }
 
 function addTeamName() {
@@ -193,13 +248,13 @@ function addTeamName() {
     newCell2.contentEditable = "true";
     newCell2.textContent = "New Team";
     newCell3.innerHTML = '<button onclick="removeTeamName(this)">Remove</button>';
-    saveTeamNames(); // Save team names after adding a new team
+    // saveTeamNames(); // Only save team names when you press the save button, not after adding a new team
 }
 
 function removeTeamName(button) {
     const row = button.parentNode.parentNode;
     row.parentNode.removeChild(row);
-    saveTeamNames(); // Save team names after removing a team
+    // saveTeamNames(); // Only save team names when you press the save button, not after removing a team
 }
 
 function drag(event) {
@@ -229,12 +284,9 @@ function drop(event) {
     }
 }
 
+
+// Call getTeamNames on page load to populate the table
+// document.addEventListener('DOMContentLoaded', getTeamNames);
 document.getElementById("teamNamesTable").addEventListener("dragover", allowDrop);
 document.getElementById("teamNamesTable").addEventListener("drop", drop);
 
-window.onload = function(event) {
-    console.log('onload');
-    initWebSocket();
-    setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
-    loadTeamNames(); // Call the function to load team names
-}
