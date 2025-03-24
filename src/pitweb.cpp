@@ -96,38 +96,16 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     }
     String type = doc["type"];
     if (type == "pilotSwap") {
-      String teamId = doc["teamId"];
-      String buttonId = doc["buttonId"];
-      debugln("Received pilotSwap message for team: " + teamId + " with button: " + buttonId);
-      int lane = teamId.toInt();
-      announcePilotSwap(lane);
-      notifyClients(); // Ensure clients are notified after pilot swap
-
+      pilotSwap(doc["teamId"], doc["buttonId"]);
     } else if (type == "update") {
-      String teamId = doc["teamId"];
-      String teamName = doc["teamName"];
-      debugln("Received update message for team: " + teamId + " with name: " + teamName);
-      int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
-      buttonStates[lane].teamName = teamName;
-      notifyClients(); // Ensure clients are notified after update
+      update(doc["teamId"], doc["teamName"]);
     } else if (type == "updateCustomMessages") {
-      // Receive and update custom messages
-      String customMessageBefore = doc["customMessageBefore"];
-      String customMessageAfter = doc["customMessageAfter"]; 
-      String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customMessageBefore + "\",\"customMessageAfter\":\"" + customMessageAfter + "\"}";
-      
-      customAnnounceMessageAfter = customMessageAfter;
-      customAnnounceMessageBefore = customMessageBefore;
-      ws.textAll(broadcastMessage);
+      updateCustomMessages(doc["customMessageBefore"], doc["customMessageAfter"]);
     } else if (type == "getCustomMessages") {
-      // Send the custom messages to the client
-      String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
-      ws.textAll(broadcastMessage);
+      getCustomMessages();
     } else if (type == "updateTeamNames") {
-      debugln("Received updateTeamNames message: " + message);
       saveTeamNamesInPreferences(message);
     } else if (type == "getTeamNames") {
-      debugln("Received getTeamNames message: " + message);
       getTeamNamesFromPreferences();
     } else {
       debugln("Unknown message type: " + type);
@@ -135,6 +113,43 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   } else {
     debugln("Unknown message type");
   }
+}
+
+
+// The PilotSwap method
+void pilotSwap(String teamId, String buttonId) {
+  // String teamId = doc["teamId"];
+  // String buttonId = doc["buttonId"];
+  debugln("Received pilotSwap message for team: " + teamId + " with button: " + buttonId);
+  int lane = teamId.toInt();
+  announcePilotSwap(lane);
+  notifyClients(); // Ensure clients are notified after pilot swap
+}
+
+void update(String teamId, String teamName) {
+
+  // String teamId = doc["teamId"];
+  // String teamName = doc["teamName"];
+  debugln("Received update message for team: " + teamId + " with name: " + teamName);
+  int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
+  buttonStates[lane].teamName = teamName;
+  notifyClients(); // Ensure clients are notified after update
+}
+
+void updateCustomMessages(String customMessageBefore, String customMessageAfter) {
+  // Receive and update custom messages
+  // String customMessageBefore = doc["customMessageBefore"];
+  // String customMessageAfter = doc["customMessageAfter"]; 
+  customAnnounceMessageBefore = customMessageBefore;
+  customAnnounceMessageAfter = customMessageAfter;
+  String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
+  ws.textAll(broadcastMessage);
+}
+
+void getCustomMessages() {
+  // Send the custom messages to the client
+  String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
+  ws.textAll(broadcastMessage);
 }
 
 // write the team names to the preferences API
