@@ -7,7 +7,7 @@
 
 #endif
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
     #define debug(message) Serial.print(message)

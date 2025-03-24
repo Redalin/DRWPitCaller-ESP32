@@ -11,12 +11,6 @@ const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
 int countdownTimer = 20;
-int numSavedTeams = 6;
-
-// struct ButtonState {
-//   String TeamName;
-//   int countdown;
-// };
 
 ButtonState buttonStates[NUM_LANES] = {
   {"Lane 1", 0},
@@ -153,34 +147,42 @@ void saveTeamNamesInPreferences(String message) {
     Serial.println(error.f_str());
     return;
   }
-  JsonArray teamNames = doc["teamNames"];
-  numSavedTeams = teamNames.size();
+  JsonArray teamNames = doc["teamNames"].as<JsonArray>();
+  int numSavedTeams = teamNames.size();
+  debugln("Number of teams to save: " + String(numSavedTeams));
+  teamNamepreferences.clear(); // Clear all existing preferences
   for (int i = 0; i < numSavedTeams; i++) {
     String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
-    String teamName = teamNames[i];
+    String teamName = teamNames[i].as<String>();
     teamNamepreferences.putString(teamId.c_str(), teamName);
+    debugln("Saved team name: " + teamName + " for team ID: " + teamId);
   }
   teamNamepreferences.end(); // Close preferences
 }
 
 void getTeamNamesFromPreferences() {
   teamNamepreferences.begin("teamNames", true); // Open preferences with namespace "teamNames" in readOnly mode
-  String teamNames = "{\"type\":\"teamNames\",\"teamNames\":[";
-  for (int i = 0; i < numSavedTeams; i++) {
+  String teamNames = "{\"type\":\"updateTeamNames\",\"teamNames\":[";
+  int i = 0;
+  while (true) {
     String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
     String teamName = teamNamepreferences.getString(teamId.c_str(), "");
-    teamNames += "\"" + teamName + "\"";
-    if (i < numSavedTeams - 1)
-      teamNames += ",";
+    if (teamName == "") break;
+    // debugln("Read team name: " + teamName + " for team ID: " + teamId);
+    teamNames += "\"" + teamName + "\",";
+    i++;
   }
+  // remove the last comma
+  teamNames = teamNames.substring(0, teamNames.length() - 1);
   teamNames += "]}";
   teamNamepreferences.end(); // Close preferences
+  debugln("Team names list from Preferences is: " + teamNames);
   ws.textAll(teamNames);
 }
 
 void checkLaneSwitches() {
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    if (digitalRead(lanePins[lane]) == LOW) { // Assuming switch opens to HIGH but use LOW for testing
+    if (digitalRead(lanePins[lane]) == HIGH) { // Assuming switch opens to HIGH but use LOW for testing
       debugln("Lane " + String(lane+1) + " pressed");
       if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
         buttonStates[lane].countdown = countdownTimer;
