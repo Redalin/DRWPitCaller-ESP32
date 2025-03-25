@@ -4,20 +4,20 @@ const keepAliveInterval = 10000; // 10 seconds
 // Initial page load constructors
 window.onload = function(event) {
     console.log('onload');
-    initWebSocket();
-    setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
+    // initWebSocket();
+    // setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
 }
 
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
     websocket.onopen = function(event) { 
-        console.log('Connected to WebSocket'); 
-        updateConnectionStatus(true);
+        //console.log('Connected to WebSocket'); 
+        // updateConnectionStatus(true);
         getTeamNames(); // Call the function to get team names from the websocket
         loadCustomAnnouncements(); // Call the function to load announcements
     };
     websocket.onclose = function(event) { 
-        console.log('Disconnected from WebSocket'); 
+        //console.log('Disconnected from WebSocket'); 
         updateConnectionStatus(false);
         setTimeout(initWebSocket, timeout); // Attempt to reconnect after 5 seconds
     };
@@ -29,14 +29,14 @@ function initWebSocket() {
         }
     };
     websocket.onerror = function(event) { 
-        console.error('WebSocket error:', event); 
+        //console.error('WebSocket error:', event); 
         updateConnectionStatus(false);
     }; // Add error handling
 }
 
 function keepAlive() {
     if (!websocket || websocket.readyState === WebSocket.CLOSED) {
-        console.log('WebSocket is closed, attempting to reconnect...');
+        //console.log('WebSocket is closed, attempting to reconnect...');
         initWebSocket();
     }
 }
@@ -172,6 +172,11 @@ function updateConnectionStatus(isConnected) {
     }
 }
 
+// Team Names Table Functions
+function getTeamNames() {
+    websocket.send(JSON.stringify({ type: 'getTeamNames' }));
+}
+
 // Team names table and functions
 function buildTeamNamesTable(teamNames) {
     const tableBody = document.getElementById('teamNamesTableBody');
@@ -180,7 +185,8 @@ function buildTeamNamesTable(teamNames) {
     teamNames.forEach(name => {
         const row = document.createElement('tr');
         row.setAttribute('draggable', 'true');
-        row.setAttribute('ondragstart', 'drag(event)');
+        row.setAttribute('ondragstart', 'startDrag(event)');
+        row.setAttribute('ondragover', 'dragOver(event)');
 
         const dragHandleCell = document.createElement('td');
         dragHandleCell.className = 'drag-handle';
@@ -204,10 +210,7 @@ function buildTeamNamesTable(teamNames) {
     });
 }
 
-function getTeamNames() {
-    websocket.send(JSON.stringify({ type: 'getTeamNames' }));
-}
-
+// Function to update the dropdown lists with the team names
 function loadTeamNames(TeamNamesList) {
     const savedTeamNames = Array.isArray(TeamNamesList) ? TeamNamesList : JSON.parse(TeamNamesList) || [];
     // console.log('Loading Saved Team Names:', savedTeamNames);
@@ -239,7 +242,7 @@ function addTeamName() {
     const table = document.getElementById('teamNamesTable').getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
     newRow.draggable = true;
-    newRow.ondragstart = drag;
+    newRow.ondragstart = startDrag;
     const newCell1 = newRow.insertCell(0);
     const newCell2 = newRow.insertCell(1);
     const newCell3 = newRow.insertCell(2);
@@ -257,19 +260,70 @@ function removeTeamName(button) {
     // saveTeamNames(); // Only save team names when you press the save button, not after removing a team
 }
 
-function drag(event) {
+// Drag and drop functions
+// // Base elements: 
+
+// row.setAttribute('draggable', 'true');
+// row.setAttribute('ondragstart', 'startDrag(event)');
+// row.setAttribute('ondragover', 'dragOver(event)');
+
+var row;
+
+
+function startDrag(event) {
     try {
-        event.dataTransfer.setData("text/plain", event.target.closest("tr").rowIndex);
+        row = event.target;
+        event.dataTransfer.setData("text/plain", row.closest("tr").rowIndex);
+        teamNameIndex = row.closest("tr").rowIndex;
+        teamName = row.closest("tr").getElementsByTagName("td")[1].textContent;
+        document.getElementById("dragMessage").innerHTML = "Started to drag team " + teamName + " at index " + teamNameIndex;
+        // event.target.style.opacity = '0.4';
+        console.log('Dragged row:', row.closest("tr").rowIndex);
     } catch (error) {
         console.error('Drag error:', error);
     }
 }
 
-function allowDrop(event) {
+function dragOver(event) {
+    // console.log('Drag over', event.target.);
     event.preventDefault();
-}
+
+
+    const table = document.getElementById("teamNamesTable").getElementsByTagName("tbody")[0];
+    const draggedRowIndex = row.closest("tr").rowIndex;
+    const draggedRow = table.rows[draggedRowIndex - 1];
+    const targetRow = event.target.closest("tr");
+
+    // if (draggedRow && targetRow) {
+    const targetRowIndex = row.closest("tr").rowIndex;
+    //     if (draggedRowIndex < targetRowIndex) {
+    //         table.insertBefore(draggedRow, targetRow.nextSibling);
+    //     } else {
+    //         table.insertBefore(draggedRow, targetRow);
+    //     }
+        document.getElementById("hoverMessage").innerHTML = "Dragged " + draggedRow.getElementsByTagName("td")[1].textContent + " over row " + targetRow.rowIndex;
+    // }
+    teamName = row.closest("tr").getElementsByTagName("td")[1].textContent;
+    document.getElementById("dropMessage").innerHTML = "Dropping " + teamName + " over row " + targetRow.rowIndex;  
+    }
 
 function drop(event) {
+    event.preventDefault();
+
+    teamName = event.target.closest("tr").getElementsByTagName("td")[1].textContent;
+    document.getElementById("dropMessage").innerHTML = "Dropping " + teamName + " over row " + event.target.closest("tr").rowIndex;  
+    
+    targetRow = event.target.closest("tr");
+    // const draggedRowIndex = event.dataTransfer.getData("text/plain");
+    // const targetRow = event.target.closest("tr");
+    // console.log('Allow drop row: ' + draggedRowIndex + 'into row: ' + targetRow.rowIndex);
+    // if (draggedRowIndex && targetRow) {
+    //     console.log('Can drop row:', draggedRowIndex, 'before', targetRow.rowIndex);
+    // }
+
+}
+
+function oldDrop(event) {
     event.preventDefault();
     try {
         const draggedRowIndex = event.dataTransfer.getData("text/plain");
@@ -278,6 +332,7 @@ function drop(event) {
             const table = document.getElementById("teamNamesTable").getElementsByTagName("tbody")[0];
             const draggedRow = table.rows[draggedRowIndex - 1];
             table.insertBefore(draggedRow, targetRow.nextSibling);
+            console.log('Dropped row:', draggedRowIndex, 'before', targetRow.rowIndex);
         }
     } catch (error) {
         console.error('Drop error:', error);
@@ -287,6 +342,6 @@ function drop(event) {
 
 // Call getTeamNames on page load to populate the table
 // document.addEventListener('DOMContentLoaded', getTeamNames);
-document.getElementById("teamNamesTable").addEventListener("dragover", allowDrop);
-document.getElementById("teamNamesTable").addEventListener("drop", drop);
+document.getElementById("teamNamesTable").addEventListener("dragover", dragOver); 
+//document.getElementById("teamNamesTable").addEventListener("drop", drop);
 
