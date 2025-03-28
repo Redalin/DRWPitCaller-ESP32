@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure - Lists</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+    <body>
+        <div class="azure-list">
+            <h3>Azure</h3>
+            <table id="azureTable">
+                <tbody id="azureTableBody">
+                    <!-- Rows will be dynamically generated here -->
+                </tbody>
+            </table>
+            <button onclick="addRow()">Add Row</button>
+            <button onclick="saveRows()">Save</button>
+            <button onclick="buildTeamNamesTable()">Reload</button>
+        </div>
+
+        <script src="script-azure.js"></script>
+
+    </body>
+</html>

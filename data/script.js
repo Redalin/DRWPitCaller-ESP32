@@ -242,7 +242,8 @@ function addTeamName() {
     const table = document.getElementById('teamNamesTable').getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
     newRow.draggable = true;
-    newRow.ondragstart = startDrag;
+    newRow.setAttribute('ondragOver' , 'dragOver(event)');
+    newRow.setAttribute('ondragstart', 'startDrag(event)');
     const newCell1 = newRow.insertCell(0);
     const newCell2 = newRow.insertCell(1);
     const newCell3 = newRow.insertCell(2);
@@ -251,97 +252,56 @@ function addTeamName() {
     newCell2.contentEditable = "true";
     newCell2.textContent = "New Team";
     newCell3.innerHTML = '<button onclick="removeTeamName(this)">Remove</button>';
-    // saveTeamNames(); // Only save team names when you press the save button, not after adding a new team
 }
 
 function removeTeamName(button) {
     const row = button.parentNode.parentNode;
     row.parentNode.removeChild(row);
-    // saveTeamNames(); // Only save team names when you press the save button, not after removing a team
 }
 
-// Drag and drop functions
-// // Base elements: 
-
-// row.setAttribute('draggable', 'true');
-// row.setAttribute('ondragstart', 'startDrag(event)');
-// row.setAttribute('ondragover', 'dragOver(event)');
-
-var row;
+var pickedRow;
+var pickedRowText;
+var pickedRowIndex;
 
 
 function startDrag(event) {
     try {
-        row = event.target;
-        event.dataTransfer.setData("text/plain", row.closest("tr").rowIndex);
-        teamNameIndex = row.closest("tr").rowIndex;
-        teamName = row.closest("tr").getElementsByTagName("td")[1].textContent;
-        document.getElementById("dragMessage").innerHTML = "Started to drag team " + teamName + " at index " + teamNameIndex;
+        pickedRow = event.target;
+        pickedRowIndex = pickedRow.closest("tr").rowIndex;
+        pickedRowText = pickedRow.closest("tr").getElementsByTagName("td")[1].textContent;
+        event.dataTransfer.setData("text/plain", pickedRowText);
         // event.target.style.opacity = '0.4';
-        console.log('Dragged row:', row.closest("tr").rowIndex);
+        console.log('Dragged row:', pickedRowIndex);
     } catch (error) {
         console.error('Drag error:', error);
     }
 }
 
 function dragOver(event) {
-    // console.log('Drag over', event.target.);
     event.preventDefault();
 
-
-    const table = document.getElementById("teamNamesTable").getElementsByTagName("tbody")[0];
-    const draggedRowIndex = row.closest("tr").rowIndex;
-    const draggedRow = table.rows[draggedRowIndex - 1];
     const targetRow = event.target.closest("tr");
 
-    // if (draggedRow && targetRow) {
-    const targetRowIndex = row.closest("tr").rowIndex;
-    //     if (draggedRowIndex < targetRowIndex) {
-    //         table.insertBefore(draggedRow, targetRow.nextSibling);
-    //     } else {
-    //         table.insertBefore(draggedRow, targetRow);
-    //     }
-        document.getElementById("hoverMessage").innerHTML = "Dragged " + draggedRow.getElementsByTagName("td")[1].textContent + " over row " + targetRow.rowIndex;
-    // }
-    teamName = row.closest("tr").getElementsByTagName("td")[1].textContent;
-    document.getElementById("dropMessage").innerHTML = "Dropping " + teamName + " over row " + targetRow.rowIndex;  
+    if (isBefore(pickedRow, targetRow)) {
+        pickedRow.parentNode.insertBefore(pickedRow, targetRow);
+    } else {
+        pickedRow.parentNode.insertBefore(pickedRow, targetRow.nextSibling);
     }
-
-function drop(event) {
-    event.preventDefault();
-
-    teamName = event.target.closest("tr").getElementsByTagName("td")[1].textContent;
-    document.getElementById("dropMessage").innerHTML = "Dropping " + teamName + " over row " + event.target.closest("tr").rowIndex;  
-    
-    targetRow = event.target.closest("tr");
-    // const draggedRowIndex = event.dataTransfer.getData("text/plain");
-    // const targetRow = event.target.closest("tr");
-    // console.log('Allow drop row: ' + draggedRowIndex + 'into row: ' + targetRow.rowIndex);
-    // if (draggedRowIndex && targetRow) {
-    //     console.log('Can drop row:', draggedRowIndex, 'before', targetRow.rowIndex);
-    // }
-
+ 
 }
 
-function oldDrop(event) {
-    event.preventDefault();
-    try {
-        const draggedRowIndex = event.dataTransfer.getData("text/plain");
-        const targetRow = event.target.closest("tr");
-        if (draggedRowIndex && targetRow) {
-            const table = document.getElementById("teamNamesTable").getElementsByTagName("tbody")[0];
-            const draggedRow = table.rows[draggedRowIndex - 1];
-            table.insertBefore(draggedRow, targetRow.nextSibling);
-            console.log('Dropped row:', draggedRowIndex, 'before', targetRow.rowIndex);
-        }
-    } catch (error) {
-        console.error('Drop error:', error);
-    }
-}
+function isBefore(pickedRow, targetRow) {
+    if (targetRow.parentNode === pickedRow.parentNode)
+      for (var cur = pickedRow.previousSibling; cur && cur.nodeType !== 9; cur = cur.previousSibling)
+        if (cur === targetRow)
+          return true;
+    return false;
+  }
+
 
 
 // Call getTeamNames on page load to populate the table
 // document.addEventListener('DOMContentLoaded', getTeamNames);
-document.getElementById("teamNamesTable").addEventListener("dragover", dragOver); 
+// document.getElementById("teamNamesTable").addEventListener("dragover", dragOver); 
 //document.getElementById("teamNamesTable").addEventListener("drop", drop);
 
