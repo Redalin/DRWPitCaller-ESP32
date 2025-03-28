@@ -227,7 +227,7 @@ function loadTeamNames(TeamNamesList) {
         });
     });
     buildTeamNamesTable(teamNames);
-    console.log('Team Names Loaded:', teamNames);
+    // console.log('Team Names Loaded:', teamNames);
 }
 
 function saveTeamNames() {
@@ -271,7 +271,7 @@ function startDrag(event) {
         pickedRowText = pickedRow.closest("tr").getElementsByTagName("td")[1].textContent;
         event.dataTransfer.setData("text/plain", pickedRowText);
         // event.target.style.opacity = '0.4';
-        console.log('Dragged row:', pickedRowIndex);
+        // console.log('Dragged row:', pickedRowIndex);
     } catch (error) {
         console.error('Drag error:', error);
     }
