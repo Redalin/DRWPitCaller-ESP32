@@ -4,20 +4,20 @@ const keepAliveInterval = 10000; // 10 seconds
 // Initial page load constructors
 window.onload = function(event) {
     console.log('onload');
-    // initWebSocket();
-    // setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
+    initWebSocket();
+    setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
 }
 
 function initWebSocket() {
     websocket = new WebSocket('ws://' + window.location.hostname + '/ws');
     websocket.onopen = function(event) { 
-        //console.log('Connected to WebSocket'); 
-        // updateConnectionStatus(true);
+        console.log('Connected to WebSocket'); 
+        updateConnectionStatus(true);
         getTeamNames(); // Call the function to get team names from the websocket
         loadCustomAnnouncements(); // Call the function to load announcements
     };
     websocket.onclose = function(event) { 
-        //console.log('Disconnected from WebSocket'); 
+        console.log('Disconnected from WebSocket'); 
         updateConnectionStatus(false);
         setTimeout(initWebSocket, timeout); // Attempt to reconnect after 5 seconds
     };
@@ -29,14 +29,14 @@ function initWebSocket() {
         }
     };
     websocket.onerror = function(event) { 
-        //console.error('WebSocket error:', event); 
+        console.error('WebSocket error:', event); 
         updateConnectionStatus(false);
     }; // Add error handling
 }
 
 function keepAlive() {
     if (!websocket || websocket.readyState === WebSocket.CLOSED) {
-        //console.log('WebSocket is closed, attempting to reconnect...');
+        console.log('WebSocket is closed, attempting to reconnect...');
         initWebSocket();
     }
 }

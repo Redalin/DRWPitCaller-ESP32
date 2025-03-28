@@ -178,10 +178,12 @@ void saveTeamNamesInPreferences(String message) {
 void getTeamNamesFromPreferences() {
   teamNamepreferences.begin("teamNames", true); // Open preferences with namespace "teamNames" in readOnly mode
   String teamNames = "{\"type\":\"updateTeamNames\",\"teamNames\":[";
+  String teamName = "";
   int i = 0;
+
   while (true) {
     String teamId = "team" + String(i + 1); // Assuming team IDs are in the format "team1", "team2", etc.
-    String teamName = teamNamepreferences.getString(teamId.c_str(), "");
+    teamName = teamNamepreferences.getString(teamId.c_str(), "");
     if (teamName == "") break;
     // debugln("Read team name: " + teamName + " for team ID: " + teamId);
     teamNames += "\"" + teamName + "\",";
