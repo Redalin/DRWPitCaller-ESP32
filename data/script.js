@@ -303,6 +303,15 @@ function updateCountdownTimer(timer) {
     websocket.send(JSON.stringify({ type: 'updateCountdownTimer', timerValue: timer }));
 }
 
+function adjustCountdown(amount) {
+    const slider = document.getElementById('countdownSlider');
+    slider.value = Math.max(0, Math.min(300, parseInt(slider.value, 10) + amount));
+    updateCountdownDisplay(slider.value);
+}
+
+function updateCountdownDisplay(value) {
+    document.getElementById('countdownDisplay').textContent = value;
+}
 // Call getTeamNames on page load to populate the table
 // document.addEventListener('DOMContentLoaded', getTeamNames);
 // document.getElementById("teamNamesTable").addEventListener("dragover", dragOver); 

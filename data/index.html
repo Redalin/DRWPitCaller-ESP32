@@ -54,22 +54,29 @@
                 <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
             </div>
         </div>
+    </div>
+    
+    <div class="extraAdmin">
         <div class="updateCountdownTimer">
-            <p>Update the countdown for a Pit</p>
-            <input type="number" id="countdownSeconds" placeholder="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-            <button onclick="updateCountdownTimer(parseInt(document.getElementById('freeTextNumberInput').value, 10))">Save</button>
+            <p>Update the countdown for a Pilot Swap</p>
+            <div class="slider-container">
+                <button onclick="adjustCountdown(-1)">-</button>
+                <input type="range" id="countdownSlider" min="5" max="100" step="1" value="20" oninput="updateCountdownDisplay(this.value)">
+                <span id="countdownDisplay">20</span> seconds
+                <button onclick="adjustCountdown(1)">+</button>
+            </div>
+            <button onclick="updateCountdownTimer(parseInt(document.getElementById('countdownSlider').value, 10))">Save</button>
+        </div>
+
+        <!-- Add input field for custom announcement message -->
+        <div class="custom-message">
+            <p>Enter the announcement message:</p>
+            <p>Before message: <input id="customMessageBefore" placeholder="" /></p>
+            <p>Team Name</p>
+            <p>After message: <input id="customMessageAfter" placeholder="" /></p>
+            <button onclick="saveCustomAnnouncements()">Save</button> <!-- Add save button -->
         </div>
     </div>
-
-    <!-- Add input field for custom announcement message -->
-    <div class="custom-message">
-        <p>Enter the announcement message:</p>
-        <p>Before message: <input id="customMessageBefore" placeholder="" /></p>
-        <p>Team Name</p>
-        <p>After message: <input id="customMessageAfter" placeholder="" /></p>
-        <button onclick="saveCustomAnnouncements()">Save</button> <!-- Add save button -->
-    </div>
-
     <div class="team-names-list">
         <h3>Team Names</h3>
         <table id="teamNamesTable">
