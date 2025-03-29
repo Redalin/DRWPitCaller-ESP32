@@ -107,6 +107,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       saveTeamNamesInPreferences(message);
     } else if (type == "getTeamNames") {
       getTeamNamesFromPreferences();
+    } else if (type == "updateCountdownTimer") {
+      countdownTimer = doc["timerValue"];
     } else {
       debugln("Unknown message type: " + type);
     }
@@ -199,7 +201,7 @@ void getTeamNamesFromPreferences() {
 
 void checkLaneSwitches() {
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    if (digitalRead(lanePins[lane]) == HIGH) { // Assuming switch opens to HIGH but use LOW for testing
+    if (digitalRead(lanePins[lane]) == LOW) { // Assuming switch opens to HIGH but use LOW for testing
       debugln("Lane " + String(lane+1) + " pressed");
       if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
         buttonStates[lane].countdown = countdownTimer;

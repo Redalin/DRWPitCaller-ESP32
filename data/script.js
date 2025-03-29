@@ -298,7 +298,10 @@ function isBefore(pickedRow, targetRow) {
     return false;
   }
 
-
+function updateCountdownTimer(timer) {
+    console.log("Countdown timer new value: " + timer);
+    websocket.send(JSON.stringify({ type: 'updateCountdownTimer', timerValue: timer }));
+}
 
 // Call getTeamNames on page load to populate the table
 // document.addEventListener('DOMContentLoaded', getTeamNames);
