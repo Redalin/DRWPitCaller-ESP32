@@ -58,7 +58,9 @@ function handleWebSocketMessage(message) {
         // Load team names
         //console.log('Loading team names from message:', message.teamNames); // Add debugging information
         loadTeamNames(message.teamNames);
-    } else{
+    } else if  (message.type === 'timerUpdate') {
+        updateCountdownDisplay(message.timerValue);
+    } else {
         console.log('Unknown WebSocket message type:', message.type);
     }
 }
@@ -312,8 +314,4 @@ function adjustCountdown(amount) {
 function updateCountdownDisplay(value) {
     document.getElementById('countdownDisplay').textContent = value;
 }
-// Call getTeamNames on page load to populate the table
-// document.addEventListener('DOMContentLoaded', getTeamNames);
-// document.getElementById("teamNamesTable").addEventListener("dragover", dragOver); 
-//document.getElementById("teamNamesTable").addEventListener("drop", drop);
 

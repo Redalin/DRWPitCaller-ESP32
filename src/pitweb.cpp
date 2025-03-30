@@ -206,7 +206,8 @@ void getCountdownTimer() {
   countdownPreference.begin("timer", true);
   countdownTimer = countdownPreference.getInt("timer", 0);
   countdownPreference.end();
-
+  String timerString = "{\"type\":\"timerUpdate\",\"timerValue\":" + String(countdownTimer) + "}";
+  ws.textAll(timerString);
 }
 
 void updateCountdownTimer(int timer) {
