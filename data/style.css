@@ -33,7 +33,7 @@ body {
 
 button {
     padding: 5px 20px;
-    /* border: 1px solid #007BFF; */
+    border: 1px solid #007BFF;
     border-radius: 4px;
     background-color: #007BFF;
     color: white;
