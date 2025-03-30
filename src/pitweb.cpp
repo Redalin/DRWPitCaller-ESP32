@@ -10,7 +10,8 @@
 const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
-int countdownTimer = 20;
+int countdownTimer;
+Preferences countdownPreference;
 
 ButtonState buttonStates[NUM_LANES] = {
   {"Lane 1", 0},
@@ -107,8 +108,10 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       saveTeamNamesInPreferences(message);
     } else if (type == "getTeamNames") {
       getTeamNamesFromPreferences();
+    } else if (type == "getCountdownTimer") {
+      getCountdownTimer();
     } else if (type == "updateCountdownTimer") {
-      countdownTimer = doc["timerValue"];
+      updateCountdownTimer(doc["timerValue"]);
     } else {
       debugln("Unknown message type: " + type);
     }
@@ -197,6 +200,21 @@ void getTeamNamesFromPreferences() {
   teamNamepreferences.end(); // Close preferences
   debugln("Team names list from Preferences is: " + teamNames);
   ws.textAll(teamNames);
+}
+
+void getCountdownTimer() {
+  countdownPreference.begin("timer", true);
+  countdownTimer = countdownPreference.getInt("timer", 0);
+  countdownPreference.end();
+
+}
+
+void updateCountdownTimer(int timer) {
+  countdownTimer = timer;
+  // Save the timer value to preferences
+  countdownPreference.begin("timer", false);
+  countdownPreference.putInt("timer", countdownTimer);
+  countdownPreference.end();
 }
 
 void checkLaneSwitches() {

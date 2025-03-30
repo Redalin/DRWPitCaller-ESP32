@@ -33,7 +33,7 @@ body {
 
 button {
     padding: 5px 20px;
-    border: 1px solid #007BFF;  /* Add border */
+    /* border: 1px solid #007BFF; */
     border-radius: 4px;
     background-color: #007BFF;
     color: white;
@@ -58,9 +58,12 @@ button:disabled {
 
 .admin-section {
     display: flex;
+    background-color: #bbfff7;
+    border-color: black;
+    border-radius: 10px;
     flex-wrap: wrap;
-    justify-content: space-around;
-    width: 100%;
+    justify-content: center;
+    width: 95%;
     margin-top: 20px;
 }
 
@@ -71,8 +74,10 @@ button:disabled {
 }
 
 .admin-section .box {
-    flex: 1 1 200px;
+    background-color: antiquewhite;
+    flex: 0 0 250px;
     margin: 10px;
+    width: 200px;
 }
 
 @media (max-width: 600px) {
@@ -92,33 +97,43 @@ button:disabled {
     }
 }
 
-.extra-admin {
+.extraAdmin {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
-    width: 100%;
+    border-radius: 10px;
+    background-color: #ffb26a;
+    justify-content: center;
+    width: 95%;
     margin-top: 20px; 
 }
-.custom-message, .updateCountdownTimer {
-    border: 1px solid #7c7c7c; /* Update border */
-    border-radius: 4px; /* Update border radius */
-    background-color: #f9f9f9; /* Update background color */
+
+.extraAdmin h2 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+}
+
+
+.extraAdmin .countdownSlider, .customMessage, .team-names-list {
+    border: 1px solid #7c7c7c; 
+    border-radius: 10px; 
+    background-color: #f9f9f9; 
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
-    margin-bottom: 5px; /* Add margin */
+    margin: 5px; 
     color: #666;
     text-align: center;
     min-width: 400px;
-    width: 50%;
+    /* width: 50%; */
 }
 
-.custom-message input {
+.extraAdmin .custom-message input {
     margin: 5px;
     border-radius: 5px;
     padding: 5px;
     width: 80%;
-    border: 1px solid #ccc; /* Add border */
-}
+    border: 1px solid #ccc; 
+} 
 
 .version {
     position: fixed;
