@@ -28,38 +28,39 @@
         <br>
         <div class="box">
             <h3>Team 1</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team1Dropdown" onchange="updateTeamName(this, 'team1')"></select>
-                <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team1Dropdown" onchange="updateTeamName(this, 'team1')"></select>
+            <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>   
         </div>
         <div class="box">
             <h3>Team 2</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team2Dropdown" onchange="updateTeamName(this, 'team2')"></select>
-                <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team2Dropdown" onchange="updateTeamName(this, 'team2')"></select>
+            <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
         </div>
         <div class="box">
             <h3>Team 3</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team3Dropdown" onchange="updateTeamName(this, 'team3')"></select>
-                <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team3Dropdown" onchange="updateTeamName(this, 'team3')"></select>
+            <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
         </div>
         <div class="box">
             <h3>Team 4</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team4Dropdown" onchange="updateTeamName(this, 'team4')"></select>
-                <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team4Dropdown" onchange="updateTeamName(this, 'team4')"></select>
+            <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
         </div>
     </div>
-    
+    <div class="team-names-list">
+        <h3>Team Names</h3>
+        <table id="teamNamesTable">
+            <tbody id="teamNamesTableBody">
+                <!-- Rows will be dynamically generated here -->
+            </tbody>
+        </table>
+        <button onclick="addTeamName()">Add Team</button>
+        <button onclick="saveTeamNames()">Save</button>
+        <button onclick="getTeamNames()">Reload</button>
+    </div>
+    <p></p>
+    <button type="button" class="collapsible">Extra Admin Section</button>
     <div class="extraAdmin">
-        <!-- <h2>Extra Admin</h2> -->
-        <button type="button" class="collapsible">Extra Admin Section</button>
-
         <div class="countdownSlider">
             <p>Update the countdown for a Pilot Swap</p>
             <div class="slider-container">
@@ -79,21 +80,9 @@
             <p>Before message: <input id="customMessageBefore" placeholder="" /></p>
             <p>Team Name</p>
             <p>After message: <input id="customMessageAfter" placeholder="" /></p>
-            <button onclick="saveCustomAnnouncements()">Save</button> <!-- Add save button -->
+            <button onclick="saveCustomAnnouncements()">Save</button>
         </div>
-    
-        <div class="team-names-list">
-            <h3>Team Names</h3>
-            <table id="teamNamesTable">
-                <tbody id="teamNamesTableBody">
-                    <!-- Rows will be dynamically generated here -->
-                </tbody>
-            </table>
-            <button onclick="addTeamName()">Add Team</button>
-            <button onclick="saveTeamNames()">Save</button>
-            <button onclick="getTeamNames()">Reload</button>
-        </div>
-    </div>
+    </div> 
 
     <div class=version>Version 1.3.0</div>
     <div class="connection-status">

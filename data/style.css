@@ -106,32 +106,50 @@ button:disabled {
     justify-content: center;
     width: 95%;
     margin-top: 20px; 
-    /* overflow: hidden;
+    overflow: hidden;
     max-height: 0;
-    transition: max-height 0.2s ease-out; */
+    height: auto;
+    transition: max-height 0.2s ease-out;
+    flex-grow: calc();
 }
 
-/* .extraAdmin h2 {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px;
-} */
-
-.extraAdmin button.collapsible {
+.collapsible {
     background-color: #eee;
     color: black;
     cursor: pointer;
     padding: 20px;
-    width: 100%;
-    border: none;
+    width: 40%;
+    border: black;
     text-align: center;
-    outline: none;
+    outline: 1px;
     font-size: 20px;
     font-weight: bold;
     box-shadow: none;
     transition: none;
 }
 
+.active,
+.collapsible:hover {
+    background-color: #ccc;
+}
+
+.collapsible:active {
+    box-shadow: 0 2px #ddecfc;
+}
+
+.collapsible:after {
+    content: '\02795';
+    /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: white;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2796";
+    /* Unicode character for "minus" sign (-) */
+}
 
 .extraAdmin .countdownSlider, .customMessage, .team-names-list {
     border: 1px solid #7c7c7c; 
@@ -142,8 +160,7 @@ button:disabled {
     margin: 5px; 
     color: #666;
     text-align: center;
-    min-width: 400px;
-    width: 50%;
+    min-width: 380px;
 }
 
 .extraAdmin .custom-message input {

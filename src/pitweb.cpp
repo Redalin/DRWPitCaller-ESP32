@@ -72,7 +72,6 @@ void announcePilotSwap(int lane) {
 
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
   if (type == WS_EVT_CONNECT) {
-    //client->text("Connected");
     notifyClients();
   } else if (type == WS_EVT_DATA) {
     debugln("OnEvent WS_EVT_Data received");
@@ -123,18 +122,14 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 
 // The PilotSwap method
 void pilotSwap(String teamId, String buttonId) {
-  // String teamId = doc["teamId"];
-  // String buttonId = doc["buttonId"];
   debugln("Received pilotSwap message for team: " + teamId + " with button: " + buttonId);
   int lane = teamId.toInt();
   announcePilotSwap(lane);
   notifyClients(); // Ensure clients are notified after pilot swap
 }
 
+// Update the Team Name for a lane
 void update(String teamId, String teamName) {
-
-  // String teamId = doc["teamId"];
-  // String teamName = doc["teamName"];
   debugln("Received update message for team: " + teamId + " with name: " + teamName);
   int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
   buttonStates[lane].teamName = teamName;
@@ -143,8 +138,6 @@ void update(String teamId, String teamName) {
 
 void updateCustomMessages(String customMessageBefore, String customMessageAfter) {
   // Receive and update custom messages
-  // String customMessageBefore = doc["customMessageBefore"];
-  // String customMessageAfter = doc["customMessageAfter"]; 
   customAnnounceMessageBefore = customMessageBefore;
   customAnnounceMessageAfter = customMessageAfter;
   String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
@@ -207,12 +200,13 @@ void getCountdownTimer() {
   countdownTimer = countdownPreference.getInt("timer", 0);
   countdownPreference.end();
   String timerString = "{\"type\":\"timerUpdate\",\"timerValue\":" + String(countdownTimer) + "}";
+  debugln("TimerValue is: " + countdownTimer);
   ws.textAll(timerString);
 }
 
+// Save the timer value to preferences
 void updateCountdownTimer(int timer) {
   countdownTimer = timer;
-  // Save the timer value to preferences
   countdownPreference.begin("timer", false);
   countdownPreference.putInt("timer", countdownTimer);
   countdownPreference.end();
@@ -220,7 +214,7 @@ void updateCountdownTimer(int timer) {
 
 void checkLaneSwitches() {
   for (int lane = 0; lane < NUM_LANES; lane++) {
-    if (digitalRead(lanePins[lane]) == LOW) { // Assuming switch opens to HIGH but use LOW for testing
+    if (digitalRead(lanePins[lane]) == HIGH) { // Assuming switch opens to HIGH but use LOW for testing
       debugln("Lane " + String(lane+1) + " pressed");
       if (buttonStates[lane].countdown == 0) { // Only trigger if not already in countdown
         buttonStates[lane].countdown = countdownTimer;
