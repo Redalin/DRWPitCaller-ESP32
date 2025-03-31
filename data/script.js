@@ -1,6 +1,23 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
 
+// Javascript to handle section collapsing
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+
+
 // Initial page load constructors
 window.onload = function(event) {
     console.log('onload');
@@ -14,6 +31,7 @@ function initWebSocket() {
         console.log('Connected to WebSocket'); 
         updateConnectionStatus(true);
         getTeamNames(); // Call the function to get team names from the websocket
+        getCountdownTimer(); // get the current value of the countdown slider
         loadCustomAnnouncements(); // Call the function to load announcements
     };
     websocket.onclose = function(event) { 
@@ -58,7 +76,9 @@ function handleWebSocketMessage(message) {
         // Load team names
         //console.log('Loading team names from message:', message.teamNames); // Add debugging information
         loadTeamNames(message.teamNames);
-    } else{
+    } else if  (message.type === 'timerUpdate') {
+        updateCountdownDisplay(message.timerValue);
+    } else {
         console.log('Unknown WebSocket message type:', message.type);
     }
 }
@@ -232,7 +252,6 @@ function loadTeamNames(TeamNamesList) {
 
 function saveTeamNames() {
     const teamNames = Array.from(document.querySelectorAll('#teamNamesTable tbody tr td:nth-child(2)')).map(td => td.textContent);
-    
     // Send the team names to the websocket to be saved
     websocket.send(JSON.stringify({ type: 'updateTeamNames', teamNames: teamNames }));
     getTeamNames(); // Reload the team names after saving
@@ -270,8 +289,6 @@ function startDrag(event) {
         pickedRowIndex = pickedRow.closest("tr").rowIndex;
         pickedRowText = pickedRow.closest("tr").getElementsByTagName("td")[1].textContent;
         event.dataTransfer.setData("text/plain", pickedRowText);
-        // event.target.style.opacity = '0.4';
-        // console.log('Dragged row:', pickedRowIndex);
     } catch (error) {
         console.error('Drag error:', error);
     }
@@ -298,10 +315,22 @@ function isBefore(pickedRow, targetRow) {
     return false;
   }
 
+function updateCountdownTimer(timer) {
+    // console.log("Countdown timer new value: " + timer);
+    websocket.send(JSON.stringify({ type: 'updateCountdownTimer', timerValue: timer }));
+}
 
+function adjustCountdown(amount) {
+    const slider = document.getElementById('countdownSlider');
+    slider.value = Math.max(0, Math.min(300, parseInt(slider.value, 10) + amount));
+    updateCountdownDisplay(slider.value);
+}
 
-// Call getTeamNames on page load to populate the table
-// document.addEventListener('DOMContentLoaded', getTeamNames);
-// document.getElementById("teamNamesTable").addEventListener("dragover", dragOver); 
-//document.getElementById("teamNamesTable").addEventListener("drop", drop);
+function updateCountdownDisplay(value) {
+    document.getElementById('countdownDisplay').textContent = value;
+}
 
+function getCountdownTimer() {
+    // console.log("Asking for the countdown value.");
+    websocket.send(JSON.stringify({ type: 'getCountdownTimer' }));
+}

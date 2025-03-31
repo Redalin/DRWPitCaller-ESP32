@@ -10,7 +10,8 @@
 const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
-int countdownTimer = 20;
+int countdownTimer;
+Preferences countdownPreference;
 
 ButtonState buttonStates[NUM_LANES] = {
   {"Lane 1", 0},
@@ -71,7 +72,6 @@ void announcePilotSwap(int lane) {
 
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
   if (type == WS_EVT_CONNECT) {
-    //client->text("Connected");
     notifyClients();
   } else if (type == WS_EVT_DATA) {
     debugln("OnEvent WS_EVT_Data received");
@@ -107,6 +107,10 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       saveTeamNamesInPreferences(message);
     } else if (type == "getTeamNames") {
       getTeamNamesFromPreferences();
+    } else if (type == "getCountdownTimer") {
+      getCountdownTimer();
+    } else if (type == "updateCountdownTimer") {
+      updateCountdownTimer(doc["timerValue"]);
     } else {
       debugln("Unknown message type: " + type);
     }
@@ -118,18 +122,14 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 
 // The PilotSwap method
 void pilotSwap(String teamId, String buttonId) {
-  // String teamId = doc["teamId"];
-  // String buttonId = doc["buttonId"];
   debugln("Received pilotSwap message for team: " + teamId + " with button: " + buttonId);
   int lane = teamId.toInt();
   announcePilotSwap(lane);
   notifyClients(); // Ensure clients are notified after pilot swap
 }
 
+// Update the Team Name for a lane
 void update(String teamId, String teamName) {
-
-  // String teamId = doc["teamId"];
-  // String teamName = doc["teamName"];
   debugln("Received update message for team: " + teamId + " with name: " + teamName);
   int lane = teamId.substring(4).toInt() - 1; // Assuming teamId is in the format "teamX"
   buttonStates[lane].teamName = teamName;
@@ -138,8 +138,6 @@ void update(String teamId, String teamName) {
 
 void updateCustomMessages(String customMessageBefore, String customMessageAfter) {
   // Receive and update custom messages
-  // String customMessageBefore = doc["customMessageBefore"];
-  // String customMessageAfter = doc["customMessageAfter"]; 
   customAnnounceMessageBefore = customMessageBefore;
   customAnnounceMessageAfter = customMessageAfter;
   String broadcastMessage = "{\"type\":\"updateCustomMessages\",\"customMessageBefore\":\"" + customAnnounceMessageBefore + "\",\"customMessageAfter\":\"" + customAnnounceMessageAfter + "\"}";
@@ -195,6 +193,23 @@ void getTeamNamesFromPreferences() {
   teamNamepreferences.end(); // Close preferences
   debugln("Team names list from Preferences is: " + teamNames);
   ws.textAll(teamNames);
+}
+
+void getCountdownTimer() {
+  countdownPreference.begin("timer", true);
+  countdownTimer = countdownPreference.getInt("timer", 0);
+  countdownPreference.end();
+  String timerString = "{\"type\":\"timerUpdate\",\"timerValue\":" + String(countdownTimer) + "}";
+  debugln("TimerValue is: " + countdownTimer);
+  ws.textAll(timerString);
+}
+
+// Save the timer value to preferences
+void updateCountdownTimer(int timer) {
+  countdownTimer = timer;
+  countdownPreference.begin("timer", false);
+  countdownPreference.putInt("timer", countdownTimer);
+  countdownPreference.end();
 }
 
 void checkLaneSwitches() {

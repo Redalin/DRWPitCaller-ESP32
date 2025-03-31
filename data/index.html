@@ -28,43 +28,25 @@
         <br>
         <div class="box">
             <h3>Team 1</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team1Dropdown" onchange="updateTeamName(this, 'team1')"></select>
-                <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team1Dropdown" onchange="updateTeamName(this, 'team1')"></select>
+            <button id="pilotSwapButton1" onclick="pilotSwapStart('team1', this.id)">Pilot Swap</button>   
         </div>
         <div class="box">
             <h3>Team 2</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team2Dropdown" onchange="updateTeamName(this, 'team2')"></select>
-                <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team2Dropdown" onchange="updateTeamName(this, 'team2')"></select>
+            <button id="pilotSwapButton2" onclick="pilotSwapStart('team2', this.id)">Pilot Swap</button>
         </div>
         <div class="box">
             <h3>Team 3</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team3Dropdown" onchange="updateTeamName(this, 'team3')"></select>
-                <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team3Dropdown" onchange="updateTeamName(this, 'team3')"></select>
+            <button id="pilotSwapButton3" onclick="pilotSwapStart('team3', this.id)">Pilot Swap</button>
         </div>
         <div class="box">
             <h3>Team 4</h3>
-            <div class="inline-elements">
-                <select class="dropdown" id="team4Dropdown" onchange="updateTeamName(this, 'team4')"></select>
-                <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
-            </div>
+            <select class="dropdown" id="team4Dropdown" onchange="updateTeamName(this, 'team4')"></select>
+            <button id="pilotSwapButton4" onclick="pilotSwapStart('team4', this.id)">Pilot Swap</button>
         </div>
     </div>
-
-    <!-- Add input field for custom announcement message -->
-    <div class="custom-message">
-        <p>Enter the announcement message:</p>
-        <p>Before message: <input id="customMessageBefore" placeholder="" /></p>
-        <p>Team Name</p>
-        <p>After message: <input id="customMessageAfter" placeholder="" /></p>
-        <button onclick="saveCustomAnnouncements()">Save</button> <!-- Add save button -->
-    </div>
-    
     <div class="team-names-list">
         <h3>Team Names</h3>
         <table id="teamNamesTable">
@@ -76,8 +58,33 @@
         <button onclick="saveTeamNames()">Save</button>
         <button onclick="getTeamNames()">Reload</button>
     </div>
+    <p></p>
+    <button type="button" class="collapsible">Extra Admin Section</button>
+    <div class="extraAdmin">
+        <div class="countdownSlider">
+            <p>Update the countdown for a Pilot Swap</p>
+            <div class="slider-container">
+                <button onclick="adjustCountdown(-1)">-</button>
+                <input type="range" id="countdownSlider" min="5" max="100" step="1" value="20"
+                    oninput="updateCountdownDisplay(this.value)">
+                <button onclick="adjustCountdown(1)">+</button>
+                <br>
+                <span id="countdownDisplay">20</span> seconds
+            </div>
+            <button onclick="updateCountdownTimer(parseInt(document.getElementById('countdownSlider').value, 10))">Save</button>
+        </div>
+    
+        <!-- Add input field for custom announcement message -->
+        <div class="customMessage">
+            <p>Enter the announcement message:</p>
+            <p>Before message: <input id="customMessageBefore" placeholder="" /></p>
+            <p>Team Name</p>
+            <p>After message: <input id="customMessageAfter" placeholder="" /></p>
+            <button onclick="saveCustomAnnouncements()">Save</button>
+        </div>
+    </div> 
 
-    <div class=version>Version 1.2.03</div>
+    <div class=version>Version 1.3.0</div>
     <div class="connection-status">
         <div class="status-indicator disconnected" id="connectionStatusIndicator"></div>
         <span id="connectionStatusText">Disconnected</span>
