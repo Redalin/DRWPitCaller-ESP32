@@ -1,6 +1,23 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
 
+// Javascript to handle section collapsing
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+
+
 // Initial page load constructors
 window.onload = function(event) {
     console.log('onload');

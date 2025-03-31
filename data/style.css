@@ -67,8 +67,9 @@ button:disabled {
     margin-top: 20px;
 }
 
-.admin-section h2 {
+.admin-section h2, .collapsible {
     width: 100%;
+    color: black;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -105,12 +106,30 @@ button:disabled {
     justify-content: center;
     width: 95%;
     margin-top: 20px; 
+    /* overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.2s ease-out; */
 }
 
-.extraAdmin h2 {
+/* .extraAdmin h2 {
         width: 100%;
         text-align: center;
         margin-bottom: 20px;
+} */
+
+.extraAdmin button.collapsible {
+    background-color: #eee;
+    color: black;
+    cursor: pointer;
+    padding: 20px;
+    width: 100%;
+    border: none;
+    text-align: center;
+    outline: none;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: none;
+    transition: none;
 }
 
 
@@ -124,7 +143,7 @@ button:disabled {
     color: #666;
     text-align: center;
     min-width: 400px;
-    /* width: 50%; */
+    width: 50%;
 }
 
 .extraAdmin .custom-message input {
