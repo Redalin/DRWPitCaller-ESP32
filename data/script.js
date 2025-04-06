@@ -123,7 +123,7 @@ function pilotSwap(teamId) {
 
     const customMessageInputBefore = document.getElementById('customMessageBefore');
     const customMessageInputAfter = document.getElementById('customMessageAfter');
-    const announcement = customMessageInputBefore.value + teamName + customMessageInputAfter.value;
+    const announcement = customMessageInputBefore.value + " " + teamName + " " + customMessageInputAfter.value;
     voiceAnnounce(announcement);
 }
 
