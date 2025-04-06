@@ -19,6 +19,7 @@ String customAnnounceMessageAfter = "";
 
 AsyncWebSocket ws("/ws");
 AsyncWebServer server(80);
+PrettyOTA      OTAUpdates;
 Preferences teamNamepreferences;
 
 void initLittleFS() {
@@ -50,6 +51,38 @@ void initwebservers(){
   }
   Serial.println("Init Done. Ready");
   displayText("Ready");
+}
+
+void initPrettyOTA() {
+  // Print IP address
+  debugln("PrettyOTA can be accessed at: http://" + WiFi.localIP().toString() + "/update");
+
+  // Initialize PrettyOTA
+  OTAUpdates.Begin(&server);
+
+  // Set firmware version to 1.0.0
+  OTAUpdates.OverwriteAppVersion("1.0.0");
+
+  // Set current build time and date
+  PRETTY_OTA_SET_CURRENT_BUILD_TIME_AND_DATE();
+
+  OTAUpdates.OnStart(OnOTAStart);
+
+}
+
+// Gets called when update starts
+// updateMode can be FILESYSTEM or FIRMWARE
+void OnOTAStart(NSPrettyOTA::UPDATE_MODE updateMode)
+{
+    Serial.println("OTA update started");
+
+    if(updateMode == NSPrettyOTA::UPDATE_MODE::FIRMWARE) {
+        Serial.println("Mode: Firmware");
+    }
+    else if(updateMode == NSPrettyOTA::UPDATE_MODE::FILESYSTEM) {
+        Serial.println("Mode: Filesystem - umounting LittleFS");
+        LittleFS.end();
+    }
 }
 
 // This function takes a lane number and formats a message

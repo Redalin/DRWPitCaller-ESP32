@@ -1,10 +1,8 @@
 #include "config.h"
-#include "connect-wifi.h" // Wi-Fi credentials
+#include "connect-wifi.h"
 #include <arduino.h>
 #include "pitweb.h"
 #include "display-pitcaller.h"
-#include <ESPAsyncWebServer.h>
-// #include <PrettyOTA.h>
 
 void setup() {
 
@@ -21,19 +19,7 @@ void setup() {
 
   // initialise the websocket and web server
   initwebservers();
-
-  // PrettyOTA       OTAUpdates;
-  // Print IP address
-  // debugln("PrettyOTA can be accessed at: http://" + WiFi.localIP().toString() + "/update");
-
-  // Initialize PrettyOTA
-  // OTAUpdates.Begin(&server);
-
-  // Set firmware version to 1.0.0
-  // OTAUpdates.OverwriteAppVersion("1.0.0");
-
-  // Set current build time and date
-  // PRETTY_OTA_SET_CURRENT_BUILD_TIME_AND_DATE();
+  initPrettyOTA();
 
 }
 
