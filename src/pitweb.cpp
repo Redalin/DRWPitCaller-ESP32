@@ -1,11 +1,5 @@
 // Removing the Pitcaller stuff into another file also
-#include "config.h"
-#include <AsyncTCP.h>
-#include <AsyncWebSocket.h>
-#include "display-pitcaller.h"
-#include <ArduinoJson.h>
 #include "pitweb.h"
-#include <Preferences.h>
 
 const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
 unsigned long lastCheckTime = 0;

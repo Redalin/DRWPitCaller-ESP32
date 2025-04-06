@@ -2,11 +2,14 @@
 #define PITWEB_H
 
 // Removing the Pitcaller stuff into another file also
+#include "config.h"
 #include <ESPAsyncWebServer.h>
 #include <AsyncTCP.h>
 #include <AsyncWebSocket.h>
 #include "display-pitcaller.h"
 #include <LittleFS.h>
+#include <ArduinoJson.h>
+#include <Preferences.h>
 
 struct ButtonState {
   String teamName;
