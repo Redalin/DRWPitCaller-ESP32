@@ -1,12 +1,8 @@
 #include "config.h"
-#include "connect-wifi.h" // Wi-Fi credentials
+#include "connect-wifi.h"
 #include <arduino.h>
 #include "pitweb.h"
 #include "display-pitcaller.h"
-
-// The include for the Display is now in pitWeb.h directly
-// This is so we can send the button press messages to the OLED display
-//#include "display-pitcaller.h"
 
 void setup() {
 
@@ -23,6 +19,8 @@ void setup() {
 
   // initialise the websocket and web server
   initwebservers();
+  initPrettyOTA();
+
 }
 
 void loop() {
