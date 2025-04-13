@@ -23,8 +23,8 @@
         </div>
     </div>
 
-    <div class="admin-section">
-        <h2>Admin Section</h2>
+    <div class="TeamNameSelect-section" id="TeamNameSelect-section">
+        <h2>Team Names Select</h2>
         <br>
         <div class="box">
             <h3>Team 1</h3>
@@ -60,7 +60,7 @@
     </div>
     <p></p>
     <button type="button" class="collapsible">Extra Admin Section</button>
-    <div class="extraAdmin">
+    <div class="extraAdmin-section" id="extraAdmin-section">
         <div class="countdownSlider">
             <p>Update the countdown for a Pilot Swap</p>
             <div class="slider-container">
@@ -85,12 +85,12 @@
         <div class="colourPickers">
             <p>Pick a background colour for the boxes:</p>
             <div class="colourPicker">
-                <label for="adminColour">Admin Section:</label>
-                <input type="color" id="admin-section-colour" value="#ff0000" onchange="updateBGColour('admin-section', this.value)">
+                <label>Team Names Select</label>
+                <input type="color" id="TeamNameSelect-section-colour" value="#bbfff7" onchange="updateBGColour('TeamNameSelect-section', this.value)">
             </div>
             <div class="colourPicker">
                 <label for="extraAdminColour">Extra Admin Section</label>
-                <input type="color" id="extraAdmin-colour" value="#00ff00" onchange="updateBGColour('extraAdmin', this.value)">
+                <input type="color" id="extraAdmin-colour" value="#ffb26a" onchange="updateBGColour('extraAdmin-section', this.value)">
             </div>
         </div>
     </div> 
