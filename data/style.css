@@ -56,7 +56,7 @@ button:disabled {
     transform: translateY(2px);
 }
 
-.admin-section {
+.TeamNameSelect-section {
     display: flex;
     background-color: #bbfff7;
     border-color: black;
@@ -67,14 +67,14 @@ button:disabled {
     margin-top: 20px;
 }
 
-.admin-section h2, .collapsible {
+.TeamNameSelect-section h2, .collapsible {
     width: 100%;
     color: black;
     text-align: center;
     margin-bottom: 20px;
 }
 
-.admin-section .box {
+.TeamNameSelect-section .box {
     background-color: antiquewhite;
     flex: 0 0 250px;
     margin: 10px;
@@ -87,18 +87,18 @@ button:disabled {
         margin: 5px 0;
     }
 
-    .admin-section {
+    .TeamNameSelect-section {
         flex-direction: column;
         align-items: center;
     }
 
-    .admin-section .box {
+    .TeamNameSelect-section .box {
         width: 100%;
         max-width: 300px;
     }
 }
 
-.extraAdmin {
+.extraAdmin-section {
     display: flex;
     flex-wrap: wrap;
     border-radius: 10px;
@@ -138,20 +138,30 @@ button:disabled {
 }
 
 .collapsible:after {
-    content: '\02795';
-    /* Unicode character for "plus" sign (+) */
+    content: '\25B6'; /* Unicode character for a right-pointing triangle (expander arrow) */
     font-size: 13px;
-    color: white;
+    /* color: darkgrey; */
     float: right;
     margin-left: 5px;
 }
 
-.active:after {
-    content: "\2796";
-    /* Unicode character for "minus" sign (-) */
+.collapsible:before {
+    content: '\25B6'; /* Unicode character for a right-pointing triangle (expander arrow) */
+    font-size: 13px;
+    /* color: darkgray; */
+    float: left;
+    margin-right: 5px;
 }
 
-.extraAdmin .countdownSlider, .customMessage, .team-names-list, .colourPickers {
+.active:after {
+    content: "\25BC"; /* Unicode character for a down-pointing triangle (collapse arrow) */
+}
+
+.active:before {
+    content: "\25BC"; /* Unicode character for a down-pointing triangle (collapse arrow) */
+}
+
+.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers {
     border: 1px solid #7c7c7c; 
     border-radius: 10px; 
     background-color: #f9f9f9; 
@@ -163,7 +173,7 @@ button:disabled {
     min-width: 380px;
 }
 
-.extraAdmin .custom-message input {
+.extraAdmin-section .custom-message input {
     margin: 5px;
     border-radius: 5px;
     padding: 5px;

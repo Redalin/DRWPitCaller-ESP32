@@ -336,7 +336,5 @@ function getCountdownTimer() {
 }
 
 function updateBGColour(section, colour) {
-    const colourinput = colour;
-    const colourSection = document.getElementById(section);
-    colourSection.style.backgroundColor = colourinput;
+    document.getElementById(section).style.backgroundColor = colour;
 }
