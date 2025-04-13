@@ -82,6 +82,17 @@
             <p>After message: <input id="customMessageAfter" placeholder="" /></p>
             <button onclick="saveCustomAnnouncements()">Save</button>
         </div>
+        <div class="colourPickers">
+            <p>Pick a background colour for the boxes:</p>
+            <div class="colourPicker">
+                <label for="adminColour">Admin Section:</label>
+                <input type="color" id="admin-section-colour" value="#ff0000" onchange="updateBGColour('admin-section', this.value)">
+            </div>
+            <div class="colourPicker">
+                <label for="extraAdminColour">Extra Admin Section</label>
+                <input type="color" id="extraAdmin-colour" value="#00ff00" onchange="updateBGColour('extraAdmin', this.value)">
+            </div>
+        </div>
     </div> 
 
     <div class=version>Version 1.3.0</div>

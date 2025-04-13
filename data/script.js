@@ -123,7 +123,7 @@ function pilotSwap(teamId) {
 
     const customMessageInputBefore = document.getElementById('customMessageBefore');
     const customMessageInputAfter = document.getElementById('customMessageAfter');
-    const announcement = customMessageInputBefore.value + teamName + customMessageInputAfter.value;
+    const announcement = customMessageInputBefore.value + " " + teamName + " " + customMessageInputAfter.value;
     voiceAnnounce(announcement);
 }
 
@@ -333,4 +333,10 @@ function updateCountdownDisplay(value) {
 function getCountdownTimer() {
     // console.log("Asking for the countdown value.");
     websocket.send(JSON.stringify({ type: 'getCountdownTimer' }));
+}
+
+function updateBGColour(section, colour) {
+    const colourinput = colour;
+    const colourSection = document.getElementById(section);
+    colourSection.style.backgroundColor = colourinput;
 }
