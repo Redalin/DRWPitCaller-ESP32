@@ -16,7 +16,7 @@
 
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
@@ -31,7 +31,7 @@ void displayText(String message) {
 
   display.setTextSize(1.5);      // Normal 1:1 pixel scale
   display.setTextColor(WHITE); // Draw white text
-  display.setCursor(0, 30);     // Start half way down
+  display.setCursor(0, 0);     // Start half way down
   display.cp437(true);         // Use full 256 char 'Code Page 437' font
 
   display.print("HTTP://");
