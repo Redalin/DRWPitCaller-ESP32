@@ -161,7 +161,7 @@ button:disabled {
     content: "\25BC"; /* Unicode character for a down-pointing triangle (collapse arrow) */
 }
 
-.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers {
+.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers, .speechPicker {
     border: 1px solid #7c7c7c; 
     border-radius: 10px; 
     background-color: #f9f9f9; 
