@@ -10,7 +10,6 @@
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 #include <Preferences.h>
-#include <PrettyOTA.h>
 
 struct ButtonState {
   String teamName;
@@ -30,8 +29,6 @@ extern int numSavedTeams;
 
 void initwebservers();
 void initLittleFS();
-void initPrettyOTA();
-void OnOTAStart(NSPrettyOTA::UPDATE_MODE updateMode);
 void cleanupWebClients();
 void notifyClients();
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len);

@@ -19,7 +19,6 @@ void setup() {
 
   // initialise the websocket and web server
   initwebservers();
-  initPrettyOTA();
 
 }
 
