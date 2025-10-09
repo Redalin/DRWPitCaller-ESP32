@@ -175,6 +175,12 @@ function toggleMute() {
     // The mute state is tracked for UI purposes and can be used to control speech synthesis volume
 }
 
+function saveOBSSettings() {
+    const osbdEnabled = document.getElementById('osbEnabled').checked;
+    const osbdAddress = document.getElementById('osbServerIP').value;
+    const osbdPort = parseInt(document.getElementById('obsServerPort').value, 10);
+}
+
 function saveCustomAnnouncements() {
     const customMessageInputBefore = document.getElementById('customMessageBefore');
     const customMessageInputAfter = document.getElementById('customMessageAfter');
