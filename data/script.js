@@ -1,6 +1,10 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
 
+// Global variable to track mute state
+let isMuted = false;
+
+
 // Javascript to handle section collapsing
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -147,7 +151,28 @@ document.addEventListener('click', () => {
 
 function voiceAnnounce(text) {
     const announcement = new SpeechSynthesisUtterance(text);
+    // Set volume based on mute state
+    announcement.volume = isMuted ? 0 : 1;
     window.speechSynthesis.speak(announcement);
+}
+
+function toggleMute() {
+    const button = document.getElementById('muteButton');
+    
+    if (isMuted) {
+        // Unmute - set volume to 100%
+        button.textContent = '🔊';
+        button.title = 'Mute announcements';
+        isMuted = false;
+    } else {
+        // Mute - set volume to 0%
+        button.textContent = '🔇';
+        button.title = 'Unmute announcements';
+        isMuted = true;
+    }
+    
+    // Note: Browser volume control is not directly accessible via JavaScript for security reasons
+    // The mute state is tracked for UI purposes and can be used to control speech synthesis volume
 }
 
 function saveCustomAnnouncements() {
@@ -336,7 +361,34 @@ function getCountdownTimer() {
 }
 
 function updateBGColour(section, colour) {
-    const colourinput = colour;
-    const colourSection = document.getElementById(section);
-    colourSection.style.backgroundColor = colourinput;
+    document.getElementById(section).style.backgroundColor = colour;
+}
+
+function populateVoiceList() {
+    if (typeof speechSynthesis === "undefined") {
+        return;
+    }
+
+    const voices = speechSynthesis.getVoices();
+
+    for (let i = 0; i < voices.length; i++) {
+        const option = document.createElement("option");
+        option.textContent = `${voices[i].name} (${voices[i].lang})`;
+
+        if (voices[i].default) {
+            option.textContent += " — DEFAULT";
+        }
+
+        option.setAttribute("data-lang", voices[i].lang);
+        option.setAttribute("data-name", voices[i].name);
+        document.getElementById("speechPicker").appendChild(option);
+    }
+}
+
+populateVoiceList();
+if (
+    typeof speechSynthesis !== "undefined" &&
+    speechSynthesis.onvoiceschanged !== undefined
+) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
 }
