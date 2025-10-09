@@ -27,6 +27,9 @@ window.onload = function(event) {
     console.log('onload');
     initWebSocket();
     setInterval(keepAlive, keepAliveInterval); // Check WebSocket connection every 10 seconds
+    
+    // Load OBS settings and attempt connection if enabled
+    loadOBSSettings();
 }
 
 function initWebSocket() {
@@ -82,6 +85,23 @@ function handleWebSocketMessage(message) {
         loadTeamNames(message.teamNames);
     } else if  (message.type === 'timerUpdate') {
         updateCountdownDisplay(message.timerValue);
+    } else if (message.type === 'obsSettings') {
+        // Load OBS settings from ESP32
+        obsEnabled = message.obsEnabled || false;
+        obsServerAddress = message.obsServerAddress || '';
+        obsServerPort = message.obsServerPort || 4455;
+        obsPassword = message.obsPassword || '';
+        
+        // Update UI with loaded settings
+        document.getElementById('osbEnabled').checked = obsEnabled;
+        document.getElementById('osbServerIP').value = obsServerAddress;
+        document.getElementById('obsServerPort').value = obsServerPort;
+        document.getElementById('obsPassword').value = obsPassword;
+        
+        // Attempt to connect if OBS is enabled
+        if (obsEnabled && obsServerAddress && obsServerPort) {
+            setTimeout(connectToOBS, 1000); // Small delay to ensure page is fully loaded
+        }
     } else {
         console.log('Unknown WebSocket message type:', message.type);
     }
@@ -175,11 +195,6 @@ function toggleMute() {
     // The mute state is tracked for UI purposes and can be used to control speech synthesis volume
 }
 
-function saveOBSSettings() {
-    const osbdEnabled = document.getElementById('osbEnabled').checked;
-    const osbdAddress = document.getElementById('osbServerIP').value;
-    const osbdPort = parseInt(document.getElementById('obsServerPort').value, 10);
-}
 
 function saveCustomAnnouncements() {
     const customMessageInputBefore = document.getElementById('customMessageBefore');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HQProp Drone GP 2025</title>
+    <title>DRW</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
 </head>
@@ -102,11 +102,28 @@
             <button id="muteButton" onclick="toggleMute()">🔊</button>
         </div>
         <div class="obsSettings">
-            <input type="checkbox" id="osbEnabled" /> Enable OBS Webhook<br>
+            <input type="checkbox" id="osbEnabled" /> Enable OBS WebSocket<br>
             <p>Settings to connect to OBS</p>
-            <p>Server IP: <input id="osbServerIP" placeholder="0.0.0.0" /></p>
+            <p>Server IP: <input id="osbServerIP" placeholder="192.168.69.10" /></p>
             <p>Port: <input id="obsServerPort" placeholder="4455" /></p>
-            <button onclick="saveOBSSettings()">Save</button>
+            <p>Password: <input type="password" id="obsPassword" placeholder="Enter OBS WebSocket password" /></p>
+            <button onclick="saveOBSSettings()">Save Settings</button>
+            <br><br>
+            <div class="obsControls">
+                <p>OBS Controls:</p>
+                <button onclick="testOBSConnection()">Test Connection</button>
+                <button onclick="connectToOBS()">Connect to OBS</button>
+                <button onclick="disconnectFromOBS()">Disconnect from OBS</button>
+                <br><br>
+                <button onclick="getSceneItems()">Get Scene Items</button>
+                <br><br>
+                <button onclick="enableReadyElement()">Enable READY! Element</button>
+                <button onclick="disableReadyElement()">Disable READY! Element</button>
+                <br><br>
+                <div id="obsStatus" style="padding: 5px; margin: 5px 0; border-radius: 3px; background-color: #ffcccc;">
+                    OBS Status: Disconnected
+                </div>
+            </div>
         </div>
     </div> 
 
@@ -115,6 +132,7 @@
         <div class="status-indicator disconnected" id="connectionStatusIndicator"></div>
         <span id="connectionStatusText">Disconnected</span>
     </div>
+    <script src="OBSScript.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
