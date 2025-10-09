@@ -145,23 +145,11 @@ button:disabled {
     margin-left: 5px;
 }
 
-.collapsible:before {
-    content: '\25B6'; /* Unicode character for a right-pointing triangle (expander arrow) */
-    font-size: 13px;
-    /* color: darkgray; */
-    float: left;
-    margin-right: 5px;
-}
-
 .active:after {
     content: "\25BC"; /* Unicode character for a down-pointing triangle (collapse arrow) */
 }
 
-.active:before {
-    content: "\25BC"; /* Unicode character for a down-pointing triangle (collapse arrow) */
-}
-
-.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers, .speechPicker {
+.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers, .speechPicker, .muteButton {
     border: 1px solid #7c7c7c; 
     border-radius: 10px; 
     background-color: #f9f9f9; 

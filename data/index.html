@@ -97,9 +97,13 @@
             <p>Pick a voice for the announcements:</p>
             <select id="speechPicker"></select>
         </div>
+        <div class="muteButton">
+            <p>Mute the announcements</p>
+            <button id="muteButton" onclick="toggleMute()">🔊</button>
+        </div>
     </div> 
 
-    <div class=version>Version 1.3.0</div>
+    <div class=version>Version 1.3.5</div>
     <div class="connection-status">
         <div class="status-indicator disconnected" id="connectionStatusIndicator"></div>
         <span id="connectionStatusText">Disconnected</span>
