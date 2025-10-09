@@ -1,6 +1,10 @@
 const timeout = 5000; // 5 seconds
 const keepAliveInterval = 10000; // 10 seconds
 
+// Global variable to track mute state
+let isMuted = false;
+
+
 // Javascript to handle section collapsing
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -152,11 +156,8 @@ function voiceAnnounce(text) {
     window.speechSynthesis.speak(announcement);
 }
 
-// Global variable to track mute state
-let isMuted = false;
-
 function toggleMute() {
-    const button = document.getElementById('toggleMuteButton');
+    const button = document.getElementById('muteButton');
     
     if (isMuted) {
         // Unmute - set volume to 100%

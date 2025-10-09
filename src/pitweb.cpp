@@ -1,7 +1,7 @@
 // Removing the Pitcaller stuff into another file also
 #include "pitweb.h"
 
-const uint8_t lanePins[NUM_LANES] = {15, 16, 17, 18};
+const uint8_t lanePins[NUM_LANES] = {16, 17, 18, 19};
 unsigned long lastCheckTime = 0;
 unsigned long countdownTimers[NUM_LANES] = {0};
 int countdownTimer;
