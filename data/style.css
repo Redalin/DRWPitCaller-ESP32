@@ -98,6 +98,24 @@ button:disabled {
     }
 }
 
+/* Add this for better handling on small screens */
+@media (max-width: 880px) {
+    .extraAdmin-section {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    .obsSettings {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .obsSettings button {
+        width: 100%;
+        margin-bottom: 8px;
+        box-sizing: border-box;
+    }
+}
+
 .extraAdmin-section {
     display: flex;
     flex-wrap: wrap;
@@ -111,6 +129,7 @@ button:disabled {
     height: auto;
     transition: max-height 0.2s ease-out;
     flex-grow: calc();
+    bottom: 5px;
 }
 
 .collapsible {
@@ -149,7 +168,7 @@ button:disabled {
     content: "\25BC"; /* Unicode character for a down-pointing triangle (collapse arrow) */
 }
 
-.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers, .speechPicker, .muteButton {
+.extraAdmin-section .countdownSlider, .customMessage, .team-names-list, .colourPickers, .speechPicker, .muteButton, .obsSettings {
     border: 1px solid #7c7c7c; 
     border-radius: 10px; 
     background-color: #f9f9f9; 
@@ -216,4 +235,4 @@ button:disabled {
 
 .team-names-list button {
     padding: 3px;
-} 
+}
